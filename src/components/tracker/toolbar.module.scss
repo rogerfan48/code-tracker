@@ -90,6 +90,11 @@
   height: 34px;
 }
 
+.toggled {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
 .spacer {
   flex: 1;
 }

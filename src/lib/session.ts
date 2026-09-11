@@ -1,4 +1,5 @@
 import { auth } from "@/auth";
+import { PORTFOLIO_URL } from "./env";
 
 export const ALLOWED_ROLES = ["admin", "premium"] as const;
 
@@ -20,7 +21,8 @@ export async function getSessionUser(): Promise<SessionUser | null> {
     role: user.role,
     name: user.name ?? null,
     email: user.email ?? null,
-    image: user.image ?? null,
+    // avatars uploaded on roger.tw are stored as site-relative paths
+    image: user.image ? (user.image.startsWith("/") ? `${PORTFOLIO_URL}${user.image}` : user.image) : null,
     allowed: (ALLOWED_ROLES as readonly string[]).includes(user.role),
   };
 }

@@ -47,7 +47,7 @@ export function computeDue(problem: ProblemDto, settings: SettingsDto, today: Da
   const interval = settings.intervals[last.level];
   if (!interval || interval <= 0) return { status: "none", dueIn: null, last };
   const dueIn = interval - daysSince(last.date, today);
-  const status: DueStatus = dueIn < 0 ? "overdue" : dueIn === 0 ? "today" : dueIn <= 3 ? "soon" : "ok";
+  const status: DueStatus = dueIn < 0 ? "overdue" : dueIn === 0 ? "today" : dueIn <= settings.soonDays ? "soon" : "ok";
   return { status, dueIn, last };
 }
 

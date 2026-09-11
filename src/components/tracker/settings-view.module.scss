@@ -88,6 +88,25 @@
   color: var(--text-meta);
 }
 
+.soonRow {
+  margin-top: 10px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.soonDot {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid var(--due-soon-border);
+}
+
+.soonHint {
+  grid-column: 2 / -1;
+  font-size: var(--text-xs);
+  color: var(--text-meta);
+}
+
 .intervalActions {
   margin-top: 6px;
 }

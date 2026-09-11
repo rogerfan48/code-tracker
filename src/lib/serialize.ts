@@ -39,7 +39,7 @@ export function serializeTag(t: { id: string; name: string; color: string }): Ta
 
 export async function loadSettings(userId: string): Promise<SettingsDto> {
   const s = await prisma.userSettings.findUnique({ where: { userId } });
-  return { intervals: s ? [s.interval0, s.interval1, s.interval2, s.interval3] : [0, 90, 30, 14] };
+  return s ? { intervals: [s.interval0, s.interval1, s.interval2, s.interval3], soonDays: s.soonDays } : { intervals: [0, 90, 30, 14], soonDays: 7 };
 }
 
 export async function loadBootstrap(userId: string): Promise<Bootstrap> {

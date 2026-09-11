@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import { useTracker } from "./tracker-provider";
-import { useStoredValue } from "@/lib/hooks";
+import { api } from "@/lib/client-api";
 import { categoryPath, problemTags } from "@/lib/selectors";
 import type { ProblemDto } from "@/types/tracker";
 import { ProblemRow } from "./problem-row";
@@ -10,11 +10,12 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import s from "./list-views.module.scss";
 
-const WINDOWS = [3, 7, 14, 30];
+const WINDOWS = [3, 5, 7, 14, 30];
 
 export function DueView() {
-  const { data, dueMap, tagsById, categoriesById, today } = useTracker();
-  const [window, setWindow] = useStoredValue<number>("ct.dueWindow", 7);
+  const { data, dueMap, tagsById, categoriesById, today, mutate } = useTracker();
+  const window = data.settings.soonDays;
+  const setWindow = (days: number) => mutate(() => api("/api/settings", { method: "PUT", json: { ...data.settings, soonDays: days } }));
 
   const { now, upcoming, fresh } = useMemo(() => {
     const now: ProblemDto[] = [];
@@ -23,7 +24,7 @@ export function DueView() {
     for (const p of data.problems) {
       const due = dueMap.get(p.id)!;
       if (due.status === "overdue" || due.status === "today") now.push(p);
-      else if ((due.status === "soon" || due.status === "ok") && due.dueIn! <= window) upcoming.push(p);
+      else if (due.status === "soon") upcoming.push(p);
       else if (due.status === "new") fresh.push(p);
     }
     const byDue = (a: ProblemDto, b: ProblemDto) => dueMap.get(a.id)!.dueIn! - dueMap.get(b.id)!.dueIn!;
@@ -31,7 +32,7 @@ export function DueView() {
     upcoming.sort(byDue);
     fresh.sort((a, b) => a.position - b.position);
     return { now, upcoming, fresh };
-  }, [data.problems, dueMap, window]);
+  }, [data.problems, dueMap]);
 
   const render = (list: ProblemDto[]) =>
     list.map((p) => {
@@ -77,7 +78,7 @@ export function DueView() {
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {WINDOWS.map((w) => (
+              {[...new Set([...WINDOWS, window])].sort((a, b) => a - b).map((w) => (
                 <SelectItem key={w} value={String(w)}>
                   within {w} days
                 </SelectItem>

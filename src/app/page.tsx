@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, LogOut } from "lucide-react";
+import { ArrowLeft, ArrowRight, LogOut, Mail } from "lucide-react";
 import { getSessionUser } from "@/lib/session";
 import { loginUrl, PORTFOLIO_URL } from "@/lib/env";
 import { Wordmark } from "@/components/layout/wordmark";
@@ -48,18 +48,31 @@ export default async function LandingPage() {
           ) : user ? (
             <div className={s.restricted} role="status">
               <p>
-                Signed in as <strong>{user.email ?? user.name}</strong> — this tracker is private to its owner.
+                This tool is restricted to authorized users. Signed in as <strong>{user.email ?? user.name}</strong>.
+                If you want access, please contact the owner.
               </p>
-              <SignOutButton>
-                <LogOut size={14} /> Sign out
-              </SignOutButton>
+              <div className={s.restrictedActions}>
+                <Button asChild variant="primary" size="sm">
+                  <a href="mailto:roger@roger.tw?subject=Code%20Tracker%20access">
+                    <Mail size={14} /> roger@roger.tw
+                  </a>
+                </Button>
+                <Button asChild size="sm">
+                  <a href={PORTFOLIO_URL}>
+                    <ArrowLeft size={14} /> Back to roger.tw
+                  </a>
+                </Button>
+                <SignOutButton>
+                  <LogOut size={14} /> Sign out
+                </SignOutButton>
+              </div>
             </div>
           ) : (
             <>
               <Button asChild variant="primary">
                 <a href={loginUrl("/problems")}>Sign in with roger.tw <ArrowRight size={16} /></a>
               </Button>
-              <span className={s.ctaHint}>Uses your roger.tw account. No separate registration.</span>
+              <span className={s.ctaHint}>Uses your roger.tw account.</span>
             </>
           )}
         </div>

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 
 export function SignOutButton({ children }: { children: React.ReactNode }) {
   return (
-    <Button size="sm" onClick={() => signOut({ callbackUrl: "/" })}>
+    <Button size="sm" variant="ghost" onClick={() => signOut({ callbackUrl: "/" })}>
       {children}
     </Button>
   );

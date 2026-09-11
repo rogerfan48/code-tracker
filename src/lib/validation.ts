@@ -39,4 +39,4 @@ export const tagCreate = z.object({ name: name.max(40), color: z.enum(TAG_COLORS
 export const tagPatch = z.object({ name: name.max(40).optional(), color: z.enum(TAG_COLORS).optional() });
 
 const interval = z.number().int().min(0).max(3650);
-export const settingsPut = z.object({ intervals: z.tuple([interval, interval, interval, interval]) });
+export const settingsPut = z.object({ intervals: z.tuple([interval, interval, interval, interval]), soonDays: z.number().int().min(1).max(365) });

@@ -52,6 +52,8 @@ export interface TagDto {
 
 export interface SettingsDto {
   intervals: [number, number, number, number];
+  /** "Soon" = due within this many days; also the Due page's window */
+  soonDays: number;
 }
 
 export interface Bootstrap {

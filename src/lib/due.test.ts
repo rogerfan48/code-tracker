@@ -3,7 +3,7 @@ import { computeDue, daysSince, isoWeekStart, latestRecord, parseLocalDate } fro
 import type { ProblemDto, RecordDto } from "@/types/tracker";
 
 const today = new Date(2026, 8, 11);
-const settings = { intervals: [0, 90, 30, 14] as [number, number, number, number] };
+const settings = { intervals: [0, 90, 30, 14] as [number, number, number, number], soonDays: 3 };
 const rec = (date: string, level: 0 | 1 | 2 | 3): RecordDto => ({ id: date, problemId: "p", date, level, note: null });
 const problem = (records: RecordDto[]): ProblemDto => ({
   id: "p", categoryId: "c", source: "LEETCODE", number: "1", title: "t", difficulty: "EASY", url: null, position: 0, tagIds: [], records,

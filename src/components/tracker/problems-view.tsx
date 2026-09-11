@@ -12,6 +12,7 @@ import { CategoryTree } from "./category-tree";
 import { StructureEditor } from "./structure-editor";
 import { PracticeDialog } from "./practice-dialog";
 import { ProblemDialog, type ProblemDialogState } from "./problem-dialog";
+import { Toc } from "./toc";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { EmptyState } from "@/components/ui/empty-state";
 import s from "./problems-view.module.scss";
@@ -23,6 +24,7 @@ export function ProblemsView() {
 
   const [filters, setFilters] = useState<Filters>(EMPTY_FILTERS);
   const [collapsedList, setCollapsedList] = useStoredValue<string[]>("ct.collapsed", []);
+  const [showTags, setShowTags] = useStoredValue<boolean>("ct.showTags", true);
   const collapsed = useMemo(() => new Set(collapsedList), [collapsedList]);
   const [editing, setEditing] = useState(false);
   const [practiceId, setPracticeId] = useState<string | null>(null);
@@ -64,23 +66,26 @@ export function ProblemsView() {
     if (!focusParam) return;
     const problem = problemsById.get(focusParam);
     if (!problem) {
-      router.replace("/problems");
+      router.replace("/problems", { scroll: false });
       return;
     }
     const sub = categoriesById.get(problem.categoryId);
     const reveal = [problem.categoryId, sub?.parentId].filter((x): x is string => Boolean(x));
     setCollapsedList((list) => list.filter((id) => !reveal.includes(id)));
-    const raf = requestAnimationFrame(() => {
-      document.querySelector<HTMLElement>(`[data-problem-id="${CSS.escape(problem.id)}"]`)?.scrollIntoView({ block: "center", behavior: "smooth" });
-      router.replace("/problems");
-    });
-    const timer = setTimeout(() => setFocusedId(null), 1800);
-    return () => {
-      cancelAnimationFrame(raf);
-      clearTimeout(timer);
-    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [focusParam]);
+
+  // Scroll once the focused row exists in the DOM (its category may have been collapsed a render ago)
+  useEffect(() => {
+    if (!focusParam || focusedId !== focusParam) return;
+    const el = document.querySelector<HTMLElement>(`[data-problem-id="${CSS.escape(focusParam)}"]`);
+    if (!el) return;
+    el.scrollIntoView({ block: "center" });
+    router.replace("/problems", { scroll: false });
+    const timer = setTimeout(() => setFocusedId(null), 1800);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [focusParam, focusedId, collapsedList]);
 
   const deleting = deleteId ? problemsById.get(deleteId) : undefined;
 
@@ -95,6 +100,8 @@ export function ProblemsView() {
         editing={editing}
         onToggleEditing={() => setEditing((e) => !e)}
         onAdd={() => setProblemDialog({ mode: "create" })}
+        showTags={showTags}
+        onToggleTags={() => setShowTags((v) => !v)}
       />
 
       {editing ? (
@@ -104,20 +111,24 @@ export function ProblemsView() {
       ) : visibleTree.length === 0 ? (
         <EmptyState title="Nothing matches" body="Try a different search or clear the filters." />
       ) : (
-        <>
-          {filtering ? <p className={s.filterHint}>Drag-and-drop is paused while filters are active.</p> : null}
-          <CategoryTree
-            tree={visibleTree}
-            collapsed={collapsed}
-            onToggle={toggle}
-            dndEnabled={!filtering}
-            focusedId={focusedId}
-            onOpen={setPracticeId}
-            onEdit={(id) => setProblemDialog({ mode: "edit", problemId: id })}
-            onDelete={setDeleteId}
-            onAddTo={(categoryId) => setProblemDialog({ mode: "create", categoryId })}
-          />
-        </>
+        <div className={s.layout}>
+          <div className={s.content}>
+            {filtering ? <p className={s.filterHint}>Drag-and-drop is paused while filters are active.</p> : null}
+            <CategoryTree
+              tree={visibleTree}
+              collapsed={collapsed}
+              onToggle={toggle}
+              dndEnabled={!filtering}
+              showTags={showTags}
+              focusedId={focusedId}
+              onOpen={setPracticeId}
+              onEdit={(id) => setProblemDialog({ mode: "edit", problemId: id })}
+              onDelete={setDeleteId}
+              onAddTo={(categoryId) => setProblemDialog({ mode: "create", categoryId })}
+            />
+          </div>
+          <Toc tree={visibleTree} collapsed={collapsed} onExpand={(ids) => setCollapsedList((list) => list.filter((id) => !ids.includes(id)))} />
+        </div>
       )}
 
       <PracticeDialog problemId={practiceId} onOpenChange={(o) => !o && setPracticeId(null)} />

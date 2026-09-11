@@ -19,7 +19,7 @@ export function SettingsView() {
   return (
     <div className={s.page}>
       <h1 className={s.title}>Settings</h1>
-      <IntervalsForm key={data.settings.intervals.join(",")} />
+      <IntervalsForm key={`${data.settings.intervals.join(",")}:${data.settings.soonDays}`} />
       <TagManager />
     </div>
   );
@@ -28,16 +28,18 @@ export function SettingsView() {
 function IntervalsForm() {
   const { data, mutate } = useTracker();
   const [values, setValues] = useState<string[]>(() => data.settings.intervals.map(String));
+  const [soon, setSoon] = useState(String(data.settings.soonDays));
   const [busy, setBusy] = useState(false);
 
-  const dirty = values.some((v, i) => Number(v) !== data.settings.intervals[i]);
+  const dirty = values.some((v, i) => Number(v) !== data.settings.intervals[i]) || Number(soon) !== data.settings.soonDays;
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     const intervals = values.map((v) => Math.max(0, Math.min(3650, Math.round(Number(v) || 0))));
+    const soonDays = Math.max(1, Math.min(365, Math.round(Number(soon) || 1)));
     setBusy(true);
     try {
-      await mutate(() => api("/api/settings", { method: "PUT", json: { intervals } }), { success: "Intervals saved" });
+      await mutate(() => api("/api/settings", { method: "PUT", json: { intervals, soonDays } }), { success: "Settings saved" });
     } catch {
       /* toasted */
     } finally {
@@ -62,9 +64,18 @@ function IntervalsForm() {
             </span>
           </label>
         ))}
+        <label className={cn(s.interval, s.soonRow)}>
+          <span className={s.soonDot} aria-hidden />
+          <span className={s.intervalLabel}>“Soon” window</span>
+          <span className={s.intervalInput}>
+            <Input type="number" min={1} max={365} inputMode="numeric" value={soon} onChange={(e) => setSoon(e.target.value)} aria-label="Days counted as soon" />
+            <span className={s.unit}>days</span>
+          </span>
+          <span className={s.soonHint}>Problems due within this many days show as “soon” in the list and under “Coming up” on the Due page.</span>
+        </label>
         <div className={s.intervalActions}>
           <Button type="submit" variant="primary" loading={busy} disabled={!dirty}>
-            Save intervals
+            Save
           </Button>
         </div>
       </form>

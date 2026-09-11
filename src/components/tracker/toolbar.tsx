@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronsDownUp, ChevronsUpDown, Pencil, Plus, Search, X } from "lucide-react";
+import { ChevronsDownUp, ChevronsUpDown, Pencil, Plus, Search, Tag, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Filters } from "@/lib/filters";
 import { isFiltering } from "@/lib/filters";
@@ -38,9 +38,11 @@ export interface ToolbarProps {
   editing: boolean;
   onToggleEditing: () => void;
   onAdd: () => void;
+  showTags: boolean;
+  onToggleTags: () => void;
 }
 
-export function Toolbar({ filters, onFilters, tags, onCollapseAll, onExpandAll, editing, onToggleEditing, onAdd }: ToolbarProps) {
+export function Toolbar({ filters, onFilters, tags, onCollapseAll, onExpandAll, editing, onToggleEditing, onAdd, showTags, onToggleTags }: ToolbarProps) {
   const active = isFiltering(filters);
   return (
     <div className={s.bar}>
@@ -93,6 +95,9 @@ export function Toolbar({ filters, onFilters, tags, onCollapseAll, onExpandAll, 
 
       <div className={s.spacer} />
 
+      <Button variant="ghost" size="icon" aria-label={showTags ? "Hide tags" : "Show tags"} title={showTags ? "Hide tags" : "Show tags"} aria-pressed={showTags} className={cn(showTags && s.toggled)} onClick={onToggleTags}>
+        <Tag size={16} />
+      </Button>
       <Button variant="ghost" size="icon" aria-label="Collapse all" title="Collapse all" onClick={onCollapseAll}>
         <ChevronsDownUp size={16} />
       </Button>

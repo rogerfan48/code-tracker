@@ -58,9 +58,9 @@ export const ProblemRow = forwardRef<HTMLDivElement, ProblemRowProps>(function P
         <span className={s.handleSpacer} />
       )}
       <DueBadge due={due} className={s.due} />
-      <span className={s.number}>{problem.number}</span>
+      <span className={s.number} title={problem.number}>{problem.number}</span>
       <span className={s.titleCell}>
-        <span className={s.title}>{problem.title}</span>
+        <span className={s.title} title={problem.title}>{problem.title}</span>
         {breadcrumb ? <span className={s.crumb}>{breadcrumb}</span> : null}
         {tags.length ? (
           <span className={s.tags}>

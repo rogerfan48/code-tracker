@@ -32,6 +32,7 @@ export interface CategoryTreeProps {
   collapsed: Set<string>;
   onToggle: (id: string) => void;
   dndEnabled: boolean;
+  showTags: boolean;
   focusedId: string | null;
   onOpen: (problemId: string) => void;
   onEdit: (problemId: string) => void;
@@ -46,7 +47,7 @@ function reposition(problems: ProblemDto[], categoryId: string, orderedIds: stri
   return problems.map((p) => (index.has(p.id) ? { ...p, categoryId, position: index.get(p.id)! } : p));
 }
 
-export function CategoryTree({ tree, collapsed, onToggle, dndEnabled, focusedId, onOpen, onEdit, onDelete, onAddTo }: CategoryTreeProps) {
+export function CategoryTree({ tree, collapsed, onToggle, dndEnabled, showTags, focusedId, onOpen, onEdit, onDelete, onAddTo }: CategoryTreeProps) {
   const { data, problemsById, setData, reload } = useTracker();
   const [activeId, setActiveId] = useState<string | null>(null);
   const snapshot = useRef<Bootstrap | null>(null);
@@ -125,6 +126,7 @@ export function CategoryTree({ tree, collapsed, onToggle, dndEnabled, focusedId,
           onToggle={() => onToggle(sub.category.id)}
           onAddTo={() => onAddTo(sub.category.id)}
           dndEnabled={dndEnabled}
+          showTags={showTags}
           focusedId={focusedId}
           activeId={activeId}
           onOpen={onOpen}
@@ -151,7 +153,7 @@ function MainSection({ node, collapsed, onToggle, children }: { node: MainNode; 
   const problems = node.subs.flatMap((sub) => sub.problems);
   const dueCount = problems.filter((p) => ["overdue", "today"].includes(dueMap.get(p.id)?.status ?? "")).length;
   return (
-    <section className={s.main} aria-labelledby={`main-${node.category.id}`}>
+    <section className={s.main} aria-labelledby={`main-${node.category.id}`} data-category-id={node.category.id}>
       <button type="button" className={s.mainHeader} onClick={() => onToggle(node.category.id)} aria-expanded={!isCollapsed}>
         <ChevronRight size={16} className={cn(s.chevron, !isCollapsed && s.chevronOpen)} aria-hidden />
         <h2 id={`main-${node.category.id}`} className={s.mainTitle}>{node.category.name}</h2>
@@ -163,12 +165,13 @@ function MainSection({ node, collapsed, onToggle, children }: { node: MainNode; 
   );
 }
 
-function SubSection({ node, collapsed, onToggle, onAddTo, dndEnabled, focusedId, activeId, onOpen, onEdit, onDelete }: {
+function SubSection({ node, collapsed, onToggle, onAddTo, dndEnabled, showTags, focusedId, activeId, onOpen, onEdit, onDelete }: {
   node: SubNode;
   collapsed: boolean;
   onToggle: () => void;
   onAddTo: () => void;
   dndEnabled: boolean;
+  showTags: boolean;
   focusedId: string | null;
   activeId: string | null;
   onOpen: (id: string) => void;
@@ -181,11 +184,11 @@ function SubSection({ node, collapsed, onToggle, onAddTo, dndEnabled, focusedId,
   const { setNodeRef, isOver } = useDroppable({ id: containerId(node.category.id), disabled: !dndEnabled || collapsed });
 
   const rows = node.problems.map((p) => (
-    <SortableRow key={p.id} problem={p} dndEnabled={dndEnabled} focused={focusedId === p.id} dragging={activeId === p.id} onOpen={() => onOpen(p.id)} onEdit={() => onEdit(p.id)} onDelete={() => onDelete(p.id)} />
+    <SortableRow key={p.id} problem={p} dndEnabled={dndEnabled} showTags={showTags} focused={focusedId === p.id} dragging={activeId === p.id} onOpen={() => onOpen(p.id)} onEdit={() => onEdit(p.id)} onDelete={() => onDelete(p.id)} />
   ));
 
   return (
-    <div className={s.sub}>
+    <div className={s.sub} data-category-id={node.category.id}>
       <div className={s.subHeader}>
         <button type="button" className={s.subToggle} onClick={onToggle} aria-expanded={!collapsed}>
           <ChevronRight size={14} className={cn(s.chevron, !collapsed && s.chevronOpen)} aria-hidden />
@@ -213,7 +216,7 @@ function SubSection({ node, collapsed, onToggle, onAddTo, dndEnabled, focusedId,
   );
 }
 
-function SortableRow({ problem, dndEnabled, focused, dragging, onOpen, onEdit, onDelete }: { problem: ProblemDto; dndEnabled: boolean; focused: boolean; dragging: boolean; onOpen: () => void; onEdit: () => void; onDelete: () => void }) {
+function SortableRow({ problem, dndEnabled, showTags, focused, dragging, onOpen, onEdit, onDelete }: { problem: ProblemDto; dndEnabled: boolean; showTags: boolean; focused: boolean; dragging: boolean; onOpen: () => void; onEdit: () => void; onDelete: () => void }) {
   const { dueMap, tagsById, today } = useTracker();
   const { attributes, listeners, setNodeRef, setActivatorNodeRef, transform, transition } = useSortable({ id: problem.id, disabled: !dndEnabled });
   const due = dueMap.get(problem.id)!;
@@ -223,7 +226,7 @@ function SortableRow({ problem, dndEnabled, focused, dragging, onOpen, onEdit, o
       style={{ transform: CSS.Translate.toString(transform), transition }}
       problem={problem}
       due={due}
-      tags={problemTags(problem, tagsById)}
+      tags={showTags ? problemTags(problem, tagsById) : []}
       today={today}
       focused={focused}
       dragging={dragging}

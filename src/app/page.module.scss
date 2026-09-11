@@ -59,15 +59,21 @@
 
 .restricted {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 12px;
-  flex-wrap: wrap;
+  max-width: 560px;
   padding: 12px 14px;
   border: 1px solid var(--due-soon-border);
   background: #fffbeb;
   border-radius: var(--radius-card);
   font-size: var(--text-base);
   color: var(--text);
+}
+
+.restrictedActions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .preview {

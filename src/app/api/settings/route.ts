@@ -16,10 +16,10 @@ export async function GET() {
 export async function PUT(request: Request) {
   try {
     const user = await requireUser();
-    const { intervals } = await parseBody(request, settingsPut);
-    const data = { interval0: intervals[0], interval1: intervals[1], interval2: intervals[2], interval3: intervals[3] };
+    const { intervals, soonDays } = await parseBody(request, settingsPut);
+    const data = { interval0: intervals[0], interval1: intervals[1], interval2: intervals[2], interval3: intervals[3], soonDays };
     await prisma.userSettings.upsert({ where: { userId: user.id }, create: { userId: user.id, ...data }, update: data });
-    return json({ settings: { intervals } });
+    return json({ settings: { intervals, soonDays } });
   } catch (error) {
     return handleError("settings PUT", error);
   }

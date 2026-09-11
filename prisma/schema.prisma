@@ -83,4 +83,5 @@ model UserSettings {
   interval1 Int    @default(90)
   interval2 Int    @default(30)
   interval3 Int    @default(14)
+  soonDays  Int    @default(7)
 }
