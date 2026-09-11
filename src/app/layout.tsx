@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   title: { default: "Code Tracker", template: "%s · Code Tracker" },
   description: "Spaced re-practice tracker for LeetCode problems.",
   robots: { index: false, follow: false },
+  icons: { icon: "/favicon.svg" },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
