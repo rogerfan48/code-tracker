@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 import { useTracker } from "./tracker-provider";
 import { api } from "@/lib/client-api";
+import { useStoredValue } from "@/lib/hooks";
 import { categoryPath, problemTags } from "@/lib/selectors";
 import type { ProblemDto } from "@/types/tracker";
 import { ProblemRow } from "./problem-row";
@@ -14,6 +15,7 @@ const WINDOWS = [3, 5, 7, 14, 30];
 
 export function DueView() {
   const { data, dueMap, tagsById, categoriesById, today, mutate } = useTracker();
+  const [showTags] = useStoredValue<boolean>("ct.showTags", true);
   const window = data.settings.soonDays;
   const setWindow = (days: number) => mutate(() => api("/api/settings", { method: "PUT", json: { ...data.settings, soonDays: days } }));
 
@@ -42,7 +44,7 @@ export function DueView() {
           key={p.id}
           problem={p}
           due={dueMap.get(p.id)!}
-          tags={problemTags(p, tagsById)}
+          tags={showTags ? problemTags(p, tagsById) : []}
           today={today}
           href={`/problems?focus=${p.id}`}
           breadcrumb={[main?.name, sub?.name].filter(Boolean).join(" / ")}

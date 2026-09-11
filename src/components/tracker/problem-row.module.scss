@@ -2,7 +2,8 @@
 
 .row {
   display: grid;
-  grid-template-columns: 20px 52px 56px minmax(0, 1fr) 24px 68px minmax(0, 1fr) 56px;
+  /* title gets the larger share and never collapses below a readable width */
+  grid-template-columns: 20px 52px 56px minmax(360px, 3fr) 24px 68px minmax(0, 2fr) 56px;
   align-items: center;
   gap: 10px;
   min-height: 40px;
@@ -187,15 +188,49 @@
 
 @media (max-width: 860px) {
   .row {
-    grid-template-columns: 20px 52px 48px minmax(0, 1fr) 24px 56px;
-    row-gap: 4px;
+    grid-template-columns: 20px auto auto minmax(0, 1fr) auto auto;
+    grid-template-areas:
+      "handle due number title diff actions"
+      ". last last history history history";
+    gap: 6px 8px;
+  }
+
+  .handle,
+  .handleSpacer {
+    grid-area: handle;
+  }
+
+  .due {
+    grid-area: due;
+  }
+
+  .number {
+    grid-area: number;
+    max-width: 45px;
+  }
+
+  .titleCell {
+    grid-area: title;
+  }
+
+  .title {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .diff {
+    grid-area: diff;
+  }
+
+  .actions {
+    grid-area: actions;
   }
 
   .last {
-    grid-column: 3;
+    grid-area: last;
   }
 
   .history {
-    grid-column: 4 / 7;
+    grid-area: history;
   }
 }

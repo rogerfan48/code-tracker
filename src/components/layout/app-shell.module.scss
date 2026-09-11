@@ -43,6 +43,7 @@
 }
 
 .tab {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -58,6 +59,10 @@
   &:hover {
     color: var(--text-strong);
     background: var(--surface-muted);
+  }
+
+  svg {
+    flex-shrink: 0;
   }
 }
 
@@ -138,6 +143,19 @@
   }
 
   .tab {
-    padding: 0 8px;
+    width: 36px;
+    padding: 0;
+    justify-content: center;
+  }
+
+  /* icon-only tabs: the count becomes a corner badge on the icon */
+  .badge {
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    min-width: 15px;
+    height: 15px;
+    padding: 0 4px;
+    font-size: 0.625rem;
   }
 }
