@@ -9,6 +9,7 @@ import type { SessionUser } from "@/lib/session";
 import { useTracker } from "@/components/tracker/tracker-provider";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Wordmark } from "./wordmark";
+import { SiteFooter } from "./site-footer";
 import s from "./app-shell.module.scss";
 
 const TABS = [
@@ -65,6 +66,7 @@ export function AppShell({ user, children }: { user: SessionUser; children: Reac
         </div>
       </header>
       <main className={s.main}>{children}</main>
+      <SiteFooter />
     </div>
   );
 }

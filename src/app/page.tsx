@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { PreviewTable } from "@/components/landing/preview-table";
 import { FeatureGrid } from "@/components/landing/feature-grid";
 import { SignOutButton } from "@/components/landing/sign-out-button";
+import { SiteFooter } from "@/components/layout/site-footer";
 import s from "./page.module.scss";
 
 export const dynamic = "force-dynamic";
@@ -15,7 +16,8 @@ export default async function LandingPage() {
   const user = await getSessionUser();
 
   return (
-    <div className={s.page}>
+    <div className={s.wrap}>
+      <div className={s.page}>
       <header className={s.header}>
         <Wordmark />
         {user?.allowed ? (
@@ -48,7 +50,8 @@ export default async function LandingPage() {
           ) : user ? (
             <div className={s.restricted} role="status">
               <p>
-                This tool is restricted to authorized users. Signed in as <strong>{user.email ?? user.name}</strong>.
+                Signed in as <strong>{user.email ?? user.name}</strong>.<br />
+                This tool is restricted to authorized users.<br />
                 If you want access, please contact the owner.
               </p>
               <div className={s.restrictedActions}>
@@ -84,10 +87,8 @@ export default async function LandingPage() {
 
       <FeatureGrid />
 
-      <footer className={s.footer}>
-        <span>Code Tracker</span>
-        <a href={PORTFOLIO_URL}>roger.tw</a>
-      </footer>
+      </div>
+      <SiteFooter />
     </div>
   );
 }

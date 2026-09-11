@@ -5,13 +5,27 @@
   top: 52px;
   z-index: 30;
   display: flex;
+  flex-direction: column;
+  gap: 10px;
+  /* the bottom padding is the gap to the list; a margin would scroll content through it */
+  padding: var(--page-gap) 0 12px;
+  background: var(--canvas);
+  border-bottom: 1px solid var(--border);
+}
+
+.actions,
+.filters {
+  display: flex;
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
-  padding: 10px 0;
-  margin-bottom: 12px;
-  background: var(--canvas);
-  border-bottom: 1px solid var(--border);
+}
+
+.title {
+  font-size: var(--text-xl);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-strong);
 }
 
 .search {

@@ -92,6 +92,7 @@
 
   /* layout */
   --content-max: 1200px;
+  --page-gap: 20px; /* space between page content and the header / footer */
   --gutter: clamp(16px, 3vw, 32px);
 }
 

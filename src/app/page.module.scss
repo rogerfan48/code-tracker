@@ -1,7 +1,14 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
 .page {
+  width: 100%;
   max-width: var(--content-max);
   margin: 0 auto;
-  padding: 0 var(--gutter) 48px;
+  padding: 0 var(--gutter) 64px;
 }
 
 .header {
@@ -78,18 +85,4 @@
 
 .preview {
   margin-top: 8px;
-}
-
-.footer {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 64px;
-  padding-top: 20px;
-  border-top: 1px solid var(--border);
-  font-size: var(--text-sm);
-  color: var(--text-meta);
-
-  a:hover {
-    color: var(--text-strong);
-  }
 }

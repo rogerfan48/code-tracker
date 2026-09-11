@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTracker } from "./tracker-provider";
 import { useStoredValue } from "@/lib/hooks";
@@ -31,6 +31,19 @@ export function ProblemsView() {
   const [problemDialog, setProblemDialog] = useState<ProblemDialogState>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [focusedId, setFocusedId] = useState<string | null>(null);
+  const toolbarRef = useRef<HTMLDivElement>(null);
+  const [stickyTop, setStickyTop] = useState(112);
+
+  // sticky sub-category headers and the TOC must clear the app header (52px) plus the toolbar
+  useEffect(() => {
+    const el = toolbarRef.current;
+    if (!el) return;
+    const measure = () => setStickyTop(52 + el.offsetHeight);
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   const filtering = isFiltering(filters);
 
@@ -92,6 +105,7 @@ export function ProblemsView() {
   return (
     <div className={s.view}>
       <Toolbar
+        ref={toolbarRef}
         filters={filters}
         onFilters={setFilters}
         tags={data.tags}
@@ -111,7 +125,8 @@ export function ProblemsView() {
       ) : visibleTree.length === 0 ? (
         <EmptyState title="Nothing matches" body="Try a different search or clear the filters." />
       ) : (
-        <div className={s.layout}>
+        <div className={s.layout} style={{ "--sticky-top": `${stickyTop}px` } as React.CSSProperties}>
+          <Toc tree={visibleTree} collapsed={collapsed} offset={stickyTop} onExpand={(ids) => setCollapsedList((list) => list.filter((id) => !ids.includes(id)))} />
           <div className={s.content}>
             {filtering ? <p className={s.filterHint}>Drag-and-drop is paused while filters are active.</p> : null}
             <CategoryTree
@@ -127,7 +142,6 @@ export function ProblemsView() {
               onAddTo={(categoryId) => setProblemDialog({ mode: "create", categoryId })}
             />
           </div>
-          <Toc tree={visibleTree} collapsed={collapsed} onExpand={(ids) => setCollapsedList((list) => list.filter((id) => !ids.includes(id)))} />
         </div>
       )}
 

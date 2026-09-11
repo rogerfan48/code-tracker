@@ -8,8 +8,7 @@
   position: sticky;
   top: 0;
   z-index: 40;
-  background: rgb(255 255 255 / 85%);
-  backdrop-filter: blur(8px);
+  background: var(--surface);
   border-bottom: 1px solid var(--border);
 }
 
@@ -129,7 +128,8 @@
   width: 100%;
   max-width: var(--content-max);
   margin: 0 auto;
-  padding: 20px var(--gutter) 64px;
+  /* no top padding: a sticky toolbar under a padded main would jump by the padding when scrolling */
+  padding: 0 var(--gutter) var(--page-gap);
 }
 
 @media (max-width: 640px) {

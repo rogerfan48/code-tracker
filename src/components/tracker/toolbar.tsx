@@ -1,5 +1,6 @@
 "use client";
 
+import { forwardRef } from "react";
 import { ChevronsDownUp, ChevronsUpDown, Pencil, Plus, Search, Tag, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Filters } from "@/lib/filters";
@@ -42,74 +43,78 @@ export interface ToolbarProps {
   onToggleTags: () => void;
 }
 
-export function Toolbar({ filters, onFilters, tags, onCollapseAll, onExpandAll, editing, onToggleEditing, onAdd, showTags, onToggleTags }: ToolbarProps) {
+export const Toolbar = forwardRef<HTMLDivElement, ToolbarProps>(function Toolbar({ filters, onFilters, tags, onCollapseAll, onExpandAll, editing, onToggleEditing, onAdd, showTags, onToggleTags }, ref) {
   const active = isFiltering(filters);
   return (
-    <div className={s.bar}>
-      <label className={s.search}>
-        <Search size={15} aria-hidden />
-        <input
-          type="search"
-          value={filters.query}
-          placeholder="Search number or title"
-          aria-label="Search problems"
-          onChange={(e) => onFilters({ ...filters, query: e.target.value })}
-        />
-      </label>
-
-      <div className={s.group} role="group" aria-label="Difficulty">
-        {DIFFS.map((d) => (
-          <button key={d.value} type="button" aria-pressed={filters.difficulties.includes(d.value)} className={cn(s.chip, s[`diff${d.value}`])} onClick={() => onFilters({ ...filters, difficulties: toggle(filters.difficulties, d.value) })}>
-            {d.label}
-          </button>
-        ))}
-      </div>
-
-      <div className={s.group} role="group" aria-label="Status">
-        {STATUSES.map((st) => (
-          <button key={st.value} type="button" aria-pressed={filters.statuses.includes(st.value)} className={s.chip} onClick={() => onFilters({ ...filters, statuses: toggle(filters.statuses, st.value) })}>
-            {st.label}
-          </button>
-        ))}
-      </div>
-
-      <Select value={filters.tagId ?? "all"} onValueChange={(v) => onFilters({ ...filters, tagId: v === "all" ? null : v })}>
-        <SelectTrigger className={s.tagSelect} aria-label="Filter by tag">
-          <SelectValue placeholder="Any tag" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">Any tag</SelectItem>
-          {tags.map((t) => (
-            <SelectItem key={t.id} value={t.id}>
-              {t.name}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-
-      {active ? (
-        <Button variant="ghost" size="sm" onClick={() => onFilters({ query: "", difficulties: [], tagId: null, statuses: [] })}>
-          <X size={14} /> Clear
+    <div className={s.bar} ref={ref}>
+      <div className={s.actions}>
+        <h1 className={s.title}>Problems</h1>
+        <div className={s.spacer} />
+        <Button variant="ghost" size="icon" aria-label={showTags ? "Hide tags" : "Show tags"} title={showTags ? "Hide tags" : "Show tags"} aria-pressed={showTags} className={cn(showTags && s.toggled)} onClick={onToggleTags}>
+          <Tag size={16} />
         </Button>
-      ) : null}
+        <Button variant="ghost" size="icon" aria-label="Collapse all" title="Collapse all" onClick={onCollapseAll}>
+          <ChevronsDownUp size={16} />
+        </Button>
+        <Button variant="ghost" size="icon" aria-label="Expand all" title="Expand all" onClick={onExpandAll}>
+          <ChevronsUpDown size={16} />
+        </Button>
+        <Button variant={editing ? "primary" : "secondary"} onClick={onToggleEditing} aria-pressed={editing}>
+          <Pencil size={14} /> {editing ? "Done" : "Edit structure"}
+        </Button>
+        <Button variant="primary" onClick={onAdd} disabled={editing}>
+          <Plus size={16} /> Add problem
+        </Button>
+      </div>
 
-      <div className={s.spacer} />
+      <div className={s.filters}>
+        <label className={s.search}>
+          <Search size={15} aria-hidden />
+          <input
+            type="search"
+            value={filters.query}
+            placeholder="Search number or title"
+            aria-label="Search problems"
+            onChange={(e) => onFilters({ ...filters, query: e.target.value })}
+          />
+        </label>
 
-      <Button variant="ghost" size="icon" aria-label={showTags ? "Hide tags" : "Show tags"} title={showTags ? "Hide tags" : "Show tags"} aria-pressed={showTags} className={cn(showTags && s.toggled)} onClick={onToggleTags}>
-        <Tag size={16} />
-      </Button>
-      <Button variant="ghost" size="icon" aria-label="Collapse all" title="Collapse all" onClick={onCollapseAll}>
-        <ChevronsDownUp size={16} />
-      </Button>
-      <Button variant="ghost" size="icon" aria-label="Expand all" title="Expand all" onClick={onExpandAll}>
-        <ChevronsUpDown size={16} />
-      </Button>
-      <Button variant={editing ? "primary" : "secondary"} onClick={onToggleEditing} aria-pressed={editing}>
-        <Pencil size={14} /> {editing ? "Done" : "Edit structure"}
-      </Button>
-      <Button variant="primary" onClick={onAdd} disabled={editing}>
-        <Plus size={16} /> Add problem
-      </Button>
+        <div className={s.group} role="group" aria-label="Difficulty">
+          {DIFFS.map((d) => (
+            <button key={d.value} type="button" aria-pressed={filters.difficulties.includes(d.value)} className={cn(s.chip, s[`diff${d.value}`])} onClick={() => onFilters({ ...filters, difficulties: toggle(filters.difficulties, d.value) })}>
+              {d.label}
+            </button>
+          ))}
+        </div>
+
+        <div className={s.group} role="group" aria-label="Status">
+          {STATUSES.map((st) => (
+            <button key={st.value} type="button" aria-pressed={filters.statuses.includes(st.value)} className={s.chip} onClick={() => onFilters({ ...filters, statuses: toggle(filters.statuses, st.value) })}>
+              {st.label}
+            </button>
+          ))}
+        </div>
+
+        <Select value={filters.tagId ?? "all"} onValueChange={(v) => onFilters({ ...filters, tagId: v === "all" ? null : v })}>
+          <SelectTrigger className={s.tagSelect} aria-label="Filter by tag">
+            <SelectValue placeholder="Any tag" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Any tag</SelectItem>
+            {tags.map((t) => (
+              <SelectItem key={t.id} value={t.id}>
+                {t.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        {active ? (
+          <Button variant="ghost" size="sm" onClick={() => onFilters({ query: "", difficulties: [], tagId: null, statuses: [] })}>
+            <X size={14} /> Clear
+          </Button>
+        ) : null}
+      </div>
     </div>
   );
-}
+});

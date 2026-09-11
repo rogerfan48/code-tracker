@@ -9,7 +9,8 @@
 .main {
   @include card;
 
-  overflow: hidden;
+  /* clip (not hidden): hidden would turn the card into the scroll container for the sticky sub headers */
+  overflow: clip;
 }
 
 .mainHeader {
@@ -80,7 +81,7 @@
 
 .subHeader {
   position: sticky;
-  top: 52px;
+  top: var(--sticky-top, 112px);
   z-index: 5;
   display: flex;
   align-items: center;
