@@ -1,0 +1,134 @@
+@use "../../styles/mixins" as *;
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.pageHeader {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.pageTitle {
+  font-size: var(--text-xl);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-strong);
+}
+
+.pageSub {
+  margin-top: 2px;
+  font-size: var(--text-sm);
+  color: var(--text-meta);
+}
+
+.section {
+  @include card;
+
+  overflow: hidden;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--surface-muted);
+  border-bottom: 1px solid var(--border);
+}
+
+.sectionTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--text-base);
+  font-weight: 650;
+  color: var(--text-strong);
+}
+
+.sectionCount {
+  @include mono;
+
+  font-size: var(--text-xs);
+  font-weight: 500;
+  color: var(--text-meta);
+}
+
+.sectionBody {
+  display: flex;
+  flex-direction: column;
+
+  > :first-child {
+    border-top: 0;
+  }
+}
+
+.sectionEmpty {
+  padding: 14px;
+  font-size: var(--text-sm);
+  color: var(--text-meta);
+}
+
+.windowSelect {
+  width: 150px;
+  height: 30px;
+  font-size: var(--text-sm);
+}
+
+.recordRow {
+  display: grid;
+  grid-template-columns: auto 56px minmax(0, 1fr) 24px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  min-height: 40px;
+  padding: 5px 14px;
+  border-top: 1px solid var(--border);
+  font-size: var(--text-base);
+  transition: background var(--ease);
+
+  &:hover {
+    background: var(--surface-hover);
+  }
+}
+
+.recordNumber {
+  @include mono;
+
+  font-size: var(--text-sm);
+  color: var(--text-meta);
+}
+
+.recordTitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+  color: var(--text-strong);
+}
+
+.recordNote {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--text-sm);
+  color: var(--text-meta);
+}
+
+.loadMore {
+  align-self: center;
+}
+
+@media (max-width: 640px) {
+  .recordRow {
+    grid-template-columns: auto 48px minmax(0, 1fr) 24px;
+  }
+
+  .recordNote {
+    grid-column: 2 / -1;
+  }
+}

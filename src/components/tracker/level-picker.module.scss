@@ -1,0 +1,56 @@
+.group {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 4px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-control);
+  background: var(--surface);
+  color: var(--text-meta);
+  transition: border-color var(--ease), background var(--ease), color var(--ease);
+
+  &:hover {
+    border-color: var(--level-color);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+}
+
+.digit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--level-color);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.label {
+  font-size: var(--text-xs);
+}
+
+.selected {
+  border-color: var(--level-color);
+  background: color-mix(in srgb, var(--level-color) 10%, var(--surface));
+  color: var(--text-strong);
+}
+
+.level0 { --level-color: var(--level-0); }
+.level1 { --level-color: var(--level-1); }
+.level2 { --level-color: var(--level-2); }
+.level3 { --level-color: var(--level-3); }

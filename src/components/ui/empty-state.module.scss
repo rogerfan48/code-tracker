@@ -1,0 +1,21 @@
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 48px 16px;
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-card);
+  text-align: center;
+}
+
+.title {
+  font-weight: 600;
+  color: var(--text-strong);
+}
+
+.body {
+  max-width: 420px;
+  font-size: var(--text-sm);
+  color: var(--text-meta);
+}

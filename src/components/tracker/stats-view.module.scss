@@ -1,0 +1,165 @@
+@use "../../styles/mixins" as *;
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.title {
+  font-size: var(--text-xl);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-strong);
+}
+
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+.tile {
+  @include card;
+
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 14px 16px;
+
+  &[data-tone="danger"] .tileValue {
+    color: var(--danger);
+  }
+
+  &[data-tone="new"] .tileValue {
+    color: var(--due-new-fg);
+  }
+}
+
+.tileValue {
+  @include mono;
+
+  font-size: var(--text-2xl);
+  font-weight: 600;
+  line-height: 1.1;
+  color: var(--text-strong);
+}
+
+.tileLabel {
+  font-size: var(--text-sm);
+  color: var(--text-meta);
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+.card {
+  @include card;
+
+  padding: 14px 16px 16px;
+}
+
+.cardTitle {
+  margin-bottom: 12px;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-meta);
+}
+
+.bars {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.barRow {
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr) 36px;
+  align-items: center;
+  gap: 10px;
+  font-size: var(--text-sm);
+}
+
+.barLabel {
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.barTrack {
+  height: 10px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-muted);
+  overflow: hidden;
+}
+
+.barFill {
+  display: block;
+  height: 100%;
+  border-radius: var(--radius-pill);
+  transition: width 300ms ease-out;
+}
+
+.barValue {
+  @include mono;
+
+  text-align: right;
+  color: var(--text-strong);
+}
+
+.chart {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 6px;
+  height: 180px;
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  min-width: 0;
+  height: 100%;
+}
+
+.value {
+  @include mono;
+
+  font-size: var(--text-xs);
+  color: var(--text-meta);
+  min-height: 1em;
+}
+
+.bar {
+  width: 70%;
+  min-height: 2px;
+  border-radius: 3px 3px 0 0;
+  background: var(--accent-border);
+  transition: height 300ms ease-out;
+
+  &[data-current] {
+    background: var(--accent);
+  }
+}
+
+.axis {
+  @include mono;
+
+  font-size: 0.6875rem;
+  color: var(--text-faint);
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .axis {
+    font-size: 0.5625rem;
+  }
+}

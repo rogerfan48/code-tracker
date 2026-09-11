@@ -1,0 +1,102 @@
+:root {
+  /* surfaces */
+  --canvas: #f7f7f5;
+  --surface: #fff;
+  --surface-muted: #f1f1ee;
+  --surface-hover: #f4f4f1;
+  --border: #e7e7e3;
+  --border-strong: #d6d6d1;
+
+  /* text */
+  --text-strong: #18181b;
+  --text: #3f3f46;
+  --text-meta: #71717a;
+  --text-faint: #a1a1aa;
+
+  /* accent */
+  --accent: #4f46e5;
+  --accent-hover: #4338ca;
+  --accent-soft: #eef2ff;
+  --accent-border: #c7d2fe;
+  --on-accent: #fff;
+  --danger: #dc2626;
+  --danger-soft: #fef2f2;
+  --focus-ring: 0 0 0 3px rgb(79 70 229 / 30%);
+
+  /* familiarity levels: 0 needs no attention, 3 needs the most */
+  --level-0: #9ca3af;
+  --level-1: #0d9488;
+  --level-2: #d97706;
+  --level-3: #dc2626;
+  --level-1-tint: rgb(13 148 136 / 5%);
+  --level-2-tint: rgb(217 119 6 / 6%);
+  --level-3-tint: rgb(220 38 38 / 6%);
+
+  /* due badge */
+  --due-new-bg: #dcfce7;
+  --due-new-fg: #15803d;
+  --due-overdue-bg: #dc2626;
+  --due-overdue-fg: #fff;
+  --due-today-bg: #f59e0b;
+  --due-today-fg: #1c1917;
+  --due-soon-fg: #b45309;
+  --due-soon-border: #fcd34d;
+  --due-ok-fg: #71717a;
+  --due-none-fg: #a1a1aa;
+
+  /* difficulty */
+  --diff-easy: #059669;
+  --diff-medium: #d97706;
+  --diff-hard: #dc2626;
+
+  /* tag palette (bg / fg) */
+  --tag-gray-bg: #f1f1ee;
+  --tag-gray-fg: #52525b;
+  --tag-red-bg: #fee2e2;
+  --tag-red-fg: #b91c1c;
+  --tag-orange-bg: #ffedd5;
+  --tag-orange-fg: #c2410c;
+  --tag-amber-bg: #fef3c7;
+  --tag-amber-fg: #b45309;
+  --tag-green-bg: #dcfce7;
+  --tag-green-fg: #15803d;
+  --tag-teal-bg: #ccfbf1;
+  --tag-teal-fg: #0f766e;
+  --tag-blue-bg: #dbeafe;
+  --tag-blue-fg: #1d4ed8;
+  --tag-indigo-bg: #e0e7ff;
+  --tag-indigo-fg: #4338ca;
+  --tag-violet-bg: #ede9fe;
+  --tag-violet-fg: #6d28d9;
+  --tag-pink-bg: #fce7f3;
+  --tag-pink-fg: #be185d;
+
+  /* shape & motion */
+  --radius-control: 6px;
+  --radius-card: 10px;
+  --radius-pill: 999px;
+  --shadow-card: 0 1px 2px rgb(24 24 27 / 4%), 0 1px 1px rgb(24 24 27 / 3%);
+  --shadow-pop: 0 10px 30px rgb(24 24 27 / 12%), 0 2px 6px rgb(24 24 27 / 6%);
+  --ease: 150ms ease;
+
+  /* type */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, "SF Mono", "Menlo", monospace;
+  --text-xs: 0.75rem;
+  --text-sm: 0.8125rem;
+  --text-base: 0.875rem;
+  --text-md: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.5rem;
+  --text-2xl: 2.25rem;
+
+  /* layout */
+  --content-max: 1200px;
+  --gutter: clamp(16px, 3vw, 32px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --ease: 0ms linear;
+  }
+}

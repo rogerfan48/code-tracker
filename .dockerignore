@@ -1,0 +1,12 @@
+node_modules
+.pnpm-store
+.next
+.git
+.env
+.env.*
+docs
+deploy
+README.md
+CLAUDE.md
+Dockerfile
+docker-compose*.yml

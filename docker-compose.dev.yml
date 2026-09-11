@@ -1,0 +1,65 @@
+name: code-dev
+
+services:
+  web-dev:
+    container_name: code-tracker-dev-web
+    image: node:22-alpine
+    restart: always
+    working_dir: /app
+    ports:
+      - "127.0.0.1:3003:3000"
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db-dev:5432/${POSTGRES_DB}
+      AUTH_SECRET: ${AUTH_SECRET}
+      AUTH_URL: ${AUTH_URL}
+      AUTH_TRUST_HOST: "true"
+      AUTH_COOKIE_NAME: ${AUTH_COOKIE_NAME}
+      AUTH_COOKIE_DOMAIN: ${AUTH_COOKIE_DOMAIN}
+      PORTFOLIO_URL: ${PORTFOLIO_URL}
+      NODE_ENV: development
+      NODE_OPTIONS: "--max-old-space-size=1024"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    command: sh -c "corepack enable pnpm && pnpm install && npx prisma generate && npx prisma migrate deploy && pnpm dev"
+    depends_on:
+      - db-dev
+    networks:
+      - app-network-dev
+    deploy:
+      resources:
+        limits:
+          memory: 1.5G
+          cpus: '2'
+        reservations:
+          memory: 256M
+
+  db-dev:
+    image: postgres:15-alpine
+    container_name: code-tracker-dev-db
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - db_data_dev:/var/lib/postgresql/data
+    ports:
+      - "127.0.0.1:5435:5432"
+    networks:
+      - app-network-dev
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '1'
+        reservations:
+          memory: 128M
+
+networks:
+  app-network-dev:
+    driver: bridge
+
+volumes:
+  db_data_dev:

@@ -1,0 +1,93 @@
+@use "../../styles/mixins" as *;
+
+.content {
+  gap: 18px;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: var(--text-md);
+}
+
+.number {
+  @include mono;
+
+  color: var(--text-meta);
+  font-weight: 500;
+}
+
+.link {
+  display: inline-flex;
+  color: var(--text-faint);
+
+  &:hover {
+    color: var(--accent);
+  }
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.records {
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+}
+
+.recordsTitle {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-meta);
+  margin-bottom: 6px;
+}
+
+.recordList {
+  display: flex;
+  flex-direction: column;
+}
+
+.record {
+  display: grid;
+  grid-template-columns: auto 92px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  min-height: 34px;
+  padding: 2px 6px;
+  margin: 0 -6px;
+  border-radius: var(--radius-control);
+  font-size: var(--text-sm);
+
+  &[data-editing] {
+    background: var(--accent-soft);
+  }
+}
+
+.recordDate {
+  @include mono;
+
+  color: var(--text);
+}
+
+.recordNote {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-meta);
+}
+
+.recordActions {
+  display: flex;
+  gap: 2px;
+}
+
+.emptyHint {
+  font-size: var(--text-sm);
+  color: var(--text-meta);
+}

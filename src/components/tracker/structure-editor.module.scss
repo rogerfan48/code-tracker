@@ -1,0 +1,157 @@
+@use "../../styles/mixins" as *;
+
+.editor {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.hint {
+  font-size: var(--text-sm);
+  color: var(--text-meta);
+}
+
+.mains {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.main {
+  @include card;
+
+  padding: 6px 8px 8px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+}
+
+.subs {
+  display: flex;
+  flex-direction: column;
+  padding-left: 26px;
+}
+
+.subRow {
+  min-height: 32px;
+}
+
+.dragging {
+  opacity: 0.5;
+}
+
+.handle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 28px;
+  color: var(--text-faint);
+  cursor: grab;
+  touch-action: none;
+  border-radius: 4px;
+
+  &:hover {
+    color: var(--text-meta);
+    background: var(--surface-muted);
+  }
+}
+
+.name {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 6px;
+  margin-left: -6px;
+  border-radius: var(--radius-control);
+  text-align: left;
+  color: var(--text-strong);
+
+  &:hover {
+    background: var(--surface-muted);
+
+    .namePencil {
+      opacity: 1;
+    }
+  }
+}
+
+.namePencil {
+  color: var(--text-faint);
+  opacity: 0;
+  transition: opacity var(--ease);
+}
+
+.mainName {
+  font-size: var(--text-md);
+  font-weight: 650;
+}
+
+.subName {
+  font-size: var(--text-base);
+  font-weight: 500;
+}
+
+.nameEdit {
+  width: 260px;
+  max-width: 100%;
+
+  input {
+    height: 30px;
+  }
+}
+
+.meta {
+  margin-left: auto;
+  font-size: var(--text-xs);
+  color: var(--text-meta);
+  white-space: nowrap;
+}
+
+.deleteBtn {
+  color: var(--text-faint);
+
+  &:hover:not(:disabled) {
+    color: var(--danger);
+    background: var(--danger-soft);
+  }
+}
+
+.disabledWrap {
+  display: inline-flex;
+}
+
+.addSub {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  align-self: flex-start;
+  height: 28px;
+  padding: 0 8px;
+  margin-top: 2px;
+  border-radius: var(--radius-control);
+  font-size: var(--text-sm);
+  color: var(--text-meta);
+
+  &:hover {
+    background: var(--surface-muted);
+    color: var(--text-strong);
+  }
+}
+
+.inlineForm {
+  display: flex;
+  gap: 6px;
+  width: 360px;
+  max-width: 100%;
+}
+
+.subForm {
+  margin-top: 4px;
+}

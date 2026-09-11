@@ -1,0 +1,33 @@
+{
+  "extends": [
+    "stylelint-config-standard-scss"
+  ],
+  "rules": {
+    "media-feature-range-notation": "prefix",
+    "alpha-value-notation": null,
+    "hue-degree-notation": null,
+    "lightness-notation": null,
+    "selector-class-pattern": "^[a-zA-Z][a-zA-Z0-9]*(-[a-zA-Z0-9]+)*$",
+    "property-no-unknown": [
+      true,
+      {
+        "ignoreProperties": [
+          "composes"
+        ]
+      }
+    ],
+    "value-keyword-case": [
+      "lower",
+      {
+        "ignoreProperties": [
+          "composes"
+        ]
+      }
+    ],
+    "declaration-block-single-line-max-declarations": null,
+    "custom-property-empty-line-before": null,
+    "declaration-empty-line-before": null,
+    "comment-empty-line-before": null,
+    "scss/dollar-variable-empty-line-before": null
+  }
+}

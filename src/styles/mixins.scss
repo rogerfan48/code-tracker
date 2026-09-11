@@ -1,0 +1,34 @@
+@mixin focus-ring {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+@mixin control {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-control);
+  background: var(--surface);
+  color: var(--text-strong);
+  font-size: var(--text-base);
+  transition: border-color var(--ease), background var(--ease), box-shadow var(--ease);
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+@mixin card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+}
+
+@mixin mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}

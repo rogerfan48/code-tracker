@@ -1,0 +1,153 @@
+@use "../../styles/mixins" as *;
+
+/* ---- level chip ---- */
+.level {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.levelDot {
+  @include mono;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: #fff;
+  background: var(--level-color, var(--level-0));
+}
+
+.levelDays {
+  @include mono;
+
+  font-size: var(--text-xs);
+  color: var(--text-meta);
+}
+
+.levelSm .levelDot {
+  width: 18px;
+  height: 18px;
+  font-size: 0.6875rem;
+}
+
+.level0 { --level-color: var(--level-0); }
+.level1 { --level-color: var(--level-1); }
+.level2 { --level-color: var(--level-2); }
+.level3 { --level-color: var(--level-3); }
+
+/* ---- due badge ---- */
+.due {
+  @include mono;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  height: 22px;
+  padding: 0 7px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.due-new {
+  background: var(--due-new-bg);
+  color: var(--due-new-fg);
+  font-family: var(--font-sans);
+  letter-spacing: 0.02em;
+}
+
+.due-none {
+  color: var(--due-none-fg);
+}
+
+.due-overdue {
+  background: var(--due-overdue-bg);
+  color: var(--due-overdue-fg);
+}
+
+.due-today {
+  background: var(--due-today-bg);
+  color: var(--due-today-fg);
+}
+
+.due-soon {
+  border-color: var(--due-soon-border);
+  color: var(--due-soon-fg);
+}
+
+.due-ok {
+  color: var(--due-ok-fg);
+}
+
+/* ---- tag chip ---- */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  height: 18px;
+  padding: 0 7px;
+  border-radius: var(--radius-pill);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  background: var(--tag-bg);
+  color: var(--tag-fg);
+
+  &[data-color="gray"] { --tag-bg: var(--tag-gray-bg); --tag-fg: var(--tag-gray-fg); }
+  &[data-color="red"] { --tag-bg: var(--tag-red-bg); --tag-fg: var(--tag-red-fg); }
+  &[data-color="orange"] { --tag-bg: var(--tag-orange-bg); --tag-fg: var(--tag-orange-fg); }
+  &[data-color="amber"] { --tag-bg: var(--tag-amber-bg); --tag-fg: var(--tag-amber-fg); }
+  &[data-color="green"] { --tag-bg: var(--tag-green-bg); --tag-fg: var(--tag-green-fg); }
+  &[data-color="teal"] { --tag-bg: var(--tag-teal-bg); --tag-fg: var(--tag-teal-fg); }
+  &[data-color="blue"] { --tag-bg: var(--tag-blue-bg); --tag-fg: var(--tag-blue-fg); }
+  &[data-color="indigo"] { --tag-bg: var(--tag-indigo-bg); --tag-fg: var(--tag-indigo-fg); }
+  &[data-color="violet"] { --tag-bg: var(--tag-violet-bg); --tag-fg: var(--tag-violet-fg); }
+  &[data-color="pink"] { --tag-bg: var(--tag-pink-bg); --tag-fg: var(--tag-pink-fg); }
+}
+
+.tagRemove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  margin-right: -3px;
+  border-radius: 50%;
+  font-size: 12px;
+  line-height: 1;
+  color: inherit;
+  opacity: 0.7;
+
+  &:hover {
+    opacity: 1;
+    background: rgb(0 0 0 / 8%);
+  }
+}
+
+/* ---- difficulty ---- */
+.diff {
+  @include mono;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+
+.diffEASY { color: var(--diff-easy); }
+.diffMEDIUM { color: var(--diff-medium); }
+.diffHARD { color: var(--diff-hard); }
+.diffNone { color: var(--text-faint); }

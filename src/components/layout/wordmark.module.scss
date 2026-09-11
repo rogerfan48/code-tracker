@@ -1,0 +1,48 @@
+.mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-strong);
+  font-size: var(--text-md);
+}
+
+.glyph {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 16px;
+
+  span {
+    width: 4px;
+    border-radius: 2px;
+    background: var(--level-1);
+
+    &:nth-child(1) { height: 7px; background: var(--level-0); }
+    &:nth-child(2) { height: 16px; background: var(--accent); }
+    &:nth-child(3) { height: 11px; background: var(--level-2); }
+  }
+}
+
+.accent {
+  color: var(--accent);
+}
+
+.lg {
+  font-size: var(--text-xl);
+  gap: 12px;
+
+  .glyph {
+    height: 24px;
+
+    span {
+      width: 6px;
+      border-radius: 3px;
+
+      &:nth-child(1) { height: 10px; }
+      &:nth-child(2) { height: 24px; }
+      &:nth-child(3) { height: 16px; }
+    }
+  }
+}

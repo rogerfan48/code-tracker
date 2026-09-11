@@ -1,0 +1,44 @@
+import { NextResponse } from "next/server";
+import { ZodError, type ZodType } from "zod";
+import { AuthError } from "./session";
+
+export class ApiError extends Error {
+  constructor(public status: number, message: string) {
+    super(message);
+  }
+}
+
+export function json<T>(data: T, status = 200) {
+  return NextResponse.json(data, { status });
+}
+
+export function handleError(scope: string, error: unknown) {
+  if (error instanceof AuthError) return json({ error: error.message }, error.status);
+  if (error instanceof ApiError) return json({ error: error.message }, error.status);
+  if (error instanceof ZodError) {
+    const issue = error.issues[0];
+    const path = issue?.path.length ? `${issue.path.join(".")}: ` : "";
+    return json({ error: `${path}${issue?.message ?? "Invalid input"}` }, 400);
+  }
+  console.error(`[API ${scope}]`, error);
+  return json({ error: "Internal error" }, 500);
+}
+
+export async function parseBody<T>(request: Request, schema: ZodType<T>): Promise<T> {
+  let body: unknown;
+  try {
+    body = await request.json();
+  } catch {
+    throw new ApiError(400, "Invalid JSON body");
+  }
+  return schema.parse(body);
+}
+
+export function toDateString(date: Date) {
+  return date.toISOString().slice(0, 10);
+}
+
+// DATE columns come back as UTC midnight; build them the same way so they round-trip
+export function fromDateString(value: string) {
+  return new Date(`${value}T00:00:00.000Z`);
+}

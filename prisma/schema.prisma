@@ -1,0 +1,86 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ProblemSource {
+  LEETCODE
+  CUSTOM
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+// parentId null = main category, otherwise a sub category (depth is capped at 2 in the API)
+model Category {
+  id        String     @id @default(cuid())
+  userId    String
+  name      String
+  parentId  String?
+  parent    Category?  @relation("CategoryTree", fields: [parentId], references: [id])
+  children  Category[] @relation("CategoryTree")
+  position  Int
+  problems  Problem[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@index([userId, parentId, position])
+}
+
+model Problem {
+  id         String           @id @default(cuid())
+  userId     String
+  categoryId String
+  category   Category         @relation(fields: [categoryId], references: [id])
+  source     ProblemSource
+  number     String
+  title      String
+  difficulty Difficulty?
+  url        String?
+  position   Int
+  tags       Tag[]
+  records    PracticeRecord[]
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+
+  @@unique([userId, source, number])
+  @@index([userId, categoryId, position])
+}
+
+model PracticeRecord {
+  id        String   @id @default(cuid())
+  problemId String
+  problem   Problem  @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  date      DateTime @db.Date
+  level     Int
+  note      String?
+  createdAt DateTime @default(now())
+
+  @@index([problemId, date])
+}
+
+model Tag {
+  id       String    @id @default(cuid())
+  userId   String
+  name     String
+  color    String    @default("gray")
+  problems Problem[]
+
+  @@unique([userId, name])
+}
+
+model UserSettings {
+  userId    String @id
+  interval0 Int    @default(0)
+  interval1 Int    @default(90)
+  interval2 Int    @default(30)
+  interval3 Int    @default(14)
+}
