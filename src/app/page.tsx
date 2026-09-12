@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowLeft, ArrowRight, LogOut, Mail } from "lucide-react";
 import { getSessionUser } from "@/lib/session";
 import { loginUrl, PORTFOLIO_URL } from "@/lib/env";
+import { SITE } from "@/lib/site";
 import { Wordmark } from "@/components/layout/wordmark";
 import { Button } from "@/components/ui/button";
 import { PreviewTable } from "@/components/landing/preview-table";
@@ -14,9 +15,20 @@ export const dynamic = "force-dynamic";
 
 export default async function LandingPage() {
   const user = await getSessionUser();
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: SITE.name,
+    url: SITE.url,
+    description: SITE.description,
+    applicationCategory: "EducationalApplication",
+    operatingSystem: "Web",
+    author: { "@type": "Person", name: SITE.author.name, url: SITE.author.url },
+  };
 
   return (
     <div className={s.wrap}>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <div className={s.page}>
       <header className={s.header}>
         <Wordmark />

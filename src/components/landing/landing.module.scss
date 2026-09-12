@@ -104,13 +104,39 @@
 
 @media (max-width: 720px) {
   .previewRow {
-    grid-template-columns: 52px 44px minmax(0, 1fr) 24px;
-    row-gap: 6px;
+    grid-template-columns: auto auto minmax(0, 1fr) auto;
+    grid-template-areas:
+      "due number title diff"
+      "last last history history";
+    gap: 6px 8px;
   }
 
-  .previewLast,
+  .previewRow > :first-child {
+    grid-area: due;
+  }
+
+  .previewNumber {
+    grid-area: number;
+  }
+
+  .previewTitleCell {
+    grid-area: title;
+
+    > span:first-child {
+      white-space: normal;
+    }
+  }
+
+  .previewRow > :nth-child(4) {
+    grid-area: diff;
+  }
+
+  .previewLast {
+    grid-area: last;
+  }
+
   .previewHistory {
-    grid-column: 2 / -1;
+    grid-area: history;
   }
 
   .previewLink {
