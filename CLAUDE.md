@@ -37,14 +37,15 @@ Transform tasks into verifiable goals and loop until verified (`pnpm lint`, `pnp
 
 ## 6. Project Context
 
-Code Tracker — private LeetCode re-practice tracker at code.roger.tw (dev: dev.code.roger.tw).
-Next.js 16 App Router, TypeScript, SCSS modules, Radix, dnd-kit, Prisma/PostgreSQL, Docker behind host Nginx.
+Code Tracker — a personal LeetCode re-practice tracker (Next.js 16 App Router, TypeScript, SCSS modules, Radix, dnd-kit, Prisma/PostgreSQL, Docker). `README.md` is the single source of truth for what it does, how it is built, and how to run it — read it first, then the code; the README lags the code, so verify anything load-bearing against source.
 
-- Auth is SSO from roger.tw: this app only decodes the shared `.roger.tw` session cookie (`src/auth.ts`); it never signs users in. Only `admin` / `premium` roles pass `requireUser()`.
-- All data is per user (`userId` = portfolio `User.id`, no FK). Every query filters by it.
-- Day math (due dates, "days ago") runs in the browser's local time (`src/lib/due.ts`); the server only stores calendar dates.
+Non-obvious rules that the code enforces and changes must keep:
+
+- Auth is decode-only: `src/auth.ts` never signs users in, it reads a session JWT issued by a sibling site on a shared cookie domain. Only the roles in `ALLOWED_ROLES` (`src/lib/session.ts`) pass `requireUser()`.
+- Every query is scoped by `userId` (the JWT `sub`). There is no FK to any user table.
+- Calendar dates only: the server stores `DATE`; "today", days-since and due-in are computed in the browser (`src/lib/due.ts`, unit-tested).
 - Only rows on `/problems` are interactive; `/due` and `/recent` link to `/problems?focus=<id>`.
 
-Read `README.md` for architecture and `docs/dev-op.md` for operations. Both lag the code — verify anything load-bearing against source.
+Server/deployment specifics are intentionally not in this repo.
 
 Reply in English. Code, comments, and UI text in English.

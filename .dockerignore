@@ -5,6 +5,7 @@ node_modules
 .env
 .env.*
 docs
+docs-assets
 deploy
 README.md
 CLAUDE.md

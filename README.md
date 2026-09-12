@@ -1,86 +1,83 @@
 # Code Tracker
 
-Private spaced re-practice tracker for LeetCode (and custom) problems.
+A personal spaced re-practice tracker for LeetCode. It remembers every problem you have worked on, how familiar each attempt felt, and tells you which ones are due for another round.
 
-**Prod**: [code.roger.tw](https://code.roger.tw) · **Dev**: [dev.code.roger.tw](https://dev.code.roger.tw)
+**Live**: [code.roger.tw](https://code.roger.tw) (private; sign-in via [roger.tw](https://roger.tw))
 
-```
-                ┌──────────── Nginx (host) ────────────┐
-                │ code.roger.tw        dev.code.roger.tw│
-                └────────┬───────────────────┬─────────┘
-                    :3002│                   │:3003 (+Basic Auth)
-        ┌────────────────▼──────┐  ┌─────────▼────────────────┐
-        │ code-tracker-web      │  │ code-tracker-dev-web     │
-        │ (standalone build)    │  │ (next dev, bind mount)   │
-        └────────────┬──────────┘  └─────────┬────────────────┘
-        ┌────────────▼──────────┐  ┌─────────▼────────────────┐
-        │ code-tracker-db :5434 │  │ code-tracker-dev-db :5435│
-        └───────────────────────┘  └──────────────────────────┘
+![Problems view: category tree, due badges, familiarity history](docs-assets/problems.webp)
 
-        Session cookie on .roger.tw issued by roger.tw / dev.roger.tw (SSO)
-```
+## Why
 
-## What it does
+"Solved" is a poor signal. What matters for interview prep is *how it felt* and *when to come back*. Code Tracker replaces a checklist with a familiarity level per attempt (0 = trivial … 3 = very hard) and turns that into a due date using intervals you choose per level (default 0 / 90 / 30 / 14 days). The list then reads like a schedule instead of a backlog.
 
-- **Problems** (`/problems`) — a Main / Sub category tree of problems. Each row shows *days until re-practice*,
-  number, title, tags, difficulty, the last practice (familiarity level 0–3 + days ago) and the older history.
-  Click a row to log a practice; drag rows to reorder or move between sub categories; `⋯` edits or deletes.
-  **Edit structure** mode renames, reorders, adds and deletes categories inline.
-- **Due** — overdue/today, coming up within N days, and never-practiced problems. Rows jump to the problem list.
-- **Recent** — practice log grouped by day.
-- **Stats** — counts by difficulty / last level and practices per week.
-- **Settings** — re-practice interval per level (default 0 / 90 / 30 / 14 days; 0 = never) and tag colors.
-- LeetCode problems autofill title / difficulty / url / tags from the LeetCode number (unofficial GraphQL endpoint; manual entry is the fallback).
+## Features
 
-Due logic: `dueIn = (last practice date + interval[last level]) − today`, computed in the browser's local time.
+- **Problem tree** — Main / Sub categories, fully editable inline (rename, reorder, add, delete); drag rows to reorder or move them between sub categories.
+- **Rich rows** — days until re-practice, number, title + tags, difficulty, last attempt (level + days ago), the older history as chips; hover for dates and notes; faint row tint by last level.
+- **One-click logging** — click a row, pick a level, optional note; edit or delete past records.
+- **LeetCode autofill** — type the number, fetch title / difficulty / URL / topic tags. Custom problems (any source, any numbering, optional difficulty) live alongside.
+- **Due / Recent / Stats** — overdue & today, coming up within *N* days, never practiced; a practice log grouped by day; counts by difficulty and level plus a 12-week activity chart. Rows link back to the exact row in the main list.
+- **Navigation for long lists** — search, difficulty / status / tag filters, collapsible sections remembered per browser, a resizable table of contents with vim-style `scrolloff` that follows your scroll position.
+- **Settings** — re-practice intervals, the "soon" window, tag colours.
+- **Seeds** — a 267-problem reference list organised into 17 categories, and a demo set that exercises every due state.
+
+![Due view](docs-assets/due.webp)
+
+## Engineering notes
+
+- **Single sign-on without a login page.** The app never authenticates anyone. The main site issues its Auth.js session JWT on a shared cookie domain; this app shares the secret and simply *decodes* the cookie (`src/auth.ts`). No user table, no OAuth client, no password handling — and a role gate (`admin` / `premium`) applied on every page and API route. Everything is scoped to the JWT's subject.
+- **Calendar dates, computed where the user is.** The server stores plain `DATE`s; "today", days-since and due-in are pure functions in the browser (`src/lib/due.ts`, unit-tested), so a Taipei practice logged from Tokyo still counts on the right day.
+- **One fetch, derived views.** The tracker loads one bootstrap payload; tree, due list, recent log, stats and filters are memoised selectors on the client. Mutations hit small REST routes (zod-validated, ownership-checked, unique-number conflicts → 409) then refetch; drag-and-drop is optimistic and rolls back on failure.
+- **Multi-container drag-and-drop** with dnd-kit: one context over the whole tree, each sub category a sortable container, cross-container drops re-parent the row and persist as a single reorder call.
+- **Sticky layout that stays put.** The toolbar owns its top gap, sub-category headers stick under it, the table of contents is a fixed panel that shrinks above the footer instead of covering it, and category cards use `overflow: clip` (not `hidden`) so they never become scroll containers for the sticky headers.
+- **Design system in CSS custom properties** (`src/styles/tokens.css`): level ramp, due-urgency colours, tag palette, spacing; SCSS modules per component, Radix primitives for dialogs / menus / selects / tooltips, no utility framework.
+- **Production image** is a Next.js standalone build on `node:22-alpine` that runs `prisma migrate deploy` on boot; the dev container bind-mounts the source for hot reload.
+- **SEO** for the public landing only: metadata, generated Open Graph image, robots / sitemap / manifest, JSON-LD; every tracker route is `noindex`.
 
 ## Stack
 
-Next.js 16 (App Router, standalone), React 19, TypeScript, SCSS modules, Radix UI, dnd-kit, lucide, sonner,
-Prisma 6 + PostgreSQL 15, NextAuth v5 (decode-only), zod, vitest. pnpm 10, Node 22.
+| Layer | |
+|---|---|
+| Framework | Next.js 16 (App Router, standalone output), React 19, TypeScript |
+| UI | SCSS modules, Radix UI, dnd-kit, lucide-react, sonner |
+| Data | PostgreSQL 15, Prisma 6, zod |
+| Auth | NextAuth v5 (decode-only, shared JWT cookie) |
+| Tooling | pnpm, ESLint, Stylelint, Vitest, Docker Compose |
 
-## Authentication
-
-There is no login page here. `roger.tw` issues its session JWT on a `.roger.tw` cookie
-(`AUTH_COOKIE_NAME` / `AUTH_COOKIE_DOMAIN` in the portfolio compose files); this app shares `AUTH_SECRET`
-and the cookie name and simply decodes it (`src/auth.ts`). Unauthenticated visitors are redirected to
-`PORTFOLIO_URL/login?callbackUrl=…`; signed-in users whose role is not `admin` / `premium` get the
-restricted notice on the landing page. All tracker data is scoped to the user's portfolio `User.id`.
-
-## Project structure
+## Structure
 
 ```
-├── src/
-│   ├── app/                 # / landing · (app)/problems|due|recent|stats|settings · api/*
-│   ├── components/
-│   │   ├── tracker/         # provider, tree + dnd, rows, dialogs, views
-│   │   ├── ui/              # Radix wrappers styled with SCSS modules
-│   │   ├── layout/          # app shell, wordmark
-│   │   └── landing/
-│   ├── lib/                 # auth session, api helpers, due math, selectors, validation, leetcode lookup
-│   ├── styles/              # tokens.css (design tokens), reset, mixins
-│   └── types/
-├── prisma/                  # schema + migrations
-├── data/reference-problems.json   # seed list (categories + problems)
-├── scripts/                 # seed-reference.ts, seed-demo.ts
-├── deploy/                  # nginx vhosts, bind snippet, host setup README
-└── docker-compose.yml / docker-compose.dev.yml / Dockerfile
+src/
+├── app/            # / landing · (app)/problems|due|recent|stats|settings · api/*
+├── components/
+│   ├── tracker/    # provider, tree + drag-and-drop, rows, dialogs, views, TOC
+│   ├── ui/         # Radix wrappers styled with SCSS modules
+│   ├── layout/     # app shell, footer, wordmark
+│   └── landing/
+├── lib/            # session gate, API helpers, due math, selectors, validation, LeetCode lookup
+├── styles/         # tokens, reset, mixins
+└── types/
+prisma/             # schema + migrations
+data/               # reference problem list (seed)
+scripts/            # seed-reference.ts, seed-demo.ts
 ```
 
-## Development
+## Running it
+
+The app is built to sit next to an existing site that issues Auth.js JWT sessions on a shared cookie domain, so it is not turnkey on its own. What it needs:
 
 ```bash
-cp .env.example .env            # fill AUTH_SECRET with the portfolio's value for that stage
+cp .env.example .env      # AUTH_SECRET + AUTH_COOKIE_NAME must match the issuing site
 docker compose -f docker-compose.dev.yml up -d
-pnpm seed:reference --user <portfolio User.id>   # categories + problems, no history
-pnpm seed:demo --user <portfolio User.id>        # pseudo problems covering every due state
-pnpm seed:demo --user <portfolio User.id> --remove
+pnpm seed:reference --user <user id from the issuing site>
+pnpm seed:demo --user <user id>
 pnpm lint && pnpm test
 ```
 
-The user id comes from the portfolio DB: `SELECT id FROM "User" WHERE email = '…';`.
+Production: `docker compose up -d --build` (migrations run on start). Server-specific setup (reverse proxy, DNS, certificates, runbook) is kept in a private ops repository.
 
-## Deployment
+## Author
 
-See [`docs/dev-op.md`](docs/dev-op.md) for day-to-day commands and [`deploy/README.md`](deploy/README.md)
-for the one-time host setup (DNS, nginx, certbot).
+**Roger Fan** — [roger.tw](https://roger.tw) · [GitHub](https://github.com/rogerfan48) · [LinkedIn](https://linkedin.com/in/rogerfan48)
+
+Source is published for reference; see [LICENSE](LICENSE).

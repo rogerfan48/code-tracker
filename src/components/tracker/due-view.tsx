@@ -14,7 +14,7 @@ import s from "./list-views.module.scss";
 const WINDOWS = [3, 5, 7, 14, 30];
 
 export function DueView() {
-  const { data, dueMap, tagsById, categoriesById, today, mutate } = useTracker();
+  const { data, dueMap, tagsById, categoriesById, tree, today, mutate } = useTracker();
   const [showTags] = useStoredValue<boolean>("ct.showTags", true);
   const window = data.settings.soonDays;
   const setWindow = (days: number) => mutate(() => api("/api/settings", { method: "PUT", json: { ...data.settings, soonDays: days } }));
@@ -32,9 +32,12 @@ export function DueView() {
     const byDue = (a: ProblemDto, b: ProblemDto) => dueMap.get(a.id)!.dueIn! - dueMap.get(b.id)!.dueIn!;
     now.sort(byDue);
     upcoming.sort(byDue);
-    fresh.sort((a, b) => a.position - b.position);
+    // never-practiced rows follow the main list's order (category order, then row order)
+    const rank = new Map<string, number>();
+    tree.forEach((main) => main.subs.forEach((sub) => sub.problems.forEach((p) => rank.set(p.id, rank.size))));
+    fresh.sort((a, b) => (rank.get(a.id) ?? 0) - (rank.get(b.id) ?? 0));
     return { now, upcoming, fresh };
-  }, [data.problems, dueMap]);
+  }, [data.problems, dueMap, tree]);
 
   const render = (list: ProblemDto[]) =>
     list.map((p) => {

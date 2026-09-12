@@ -1,4 +1,4 @@
-name: code-dev
+name: code-tracker-dev
 
 services:
   web-dev:

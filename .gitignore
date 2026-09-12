@@ -10,3 +10,7 @@ next-env.d.ts
 npm-debug.log*
 pnpm-debug.log*
 .DS_Store
+
+# server-specific material lives in the private code-tracker-ops repo
+docs/
+deploy/

@@ -1,4 +1,4 @@
-name: code-prod
+name: code-tracker-prod
 
 services:
   web:
