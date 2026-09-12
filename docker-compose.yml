@@ -6,6 +6,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_POSTHOG_KEY: ${NEXT_PUBLIC_POSTHOG_KEY}
+        NEXT_PUBLIC_POSTHOG_HOST: ${NEXT_PUBLIC_POSTHOG_HOST}
     restart: always
     ports:
       - "127.0.0.1:3002:3000"
@@ -17,6 +20,9 @@ services:
       AUTH_COOKIE_NAME: ${AUTH_COOKIE_NAME}
       AUTH_COOKIE_DOMAIN: ${AUTH_COOKIE_DOMAIN}
       PORTFOLIO_URL: ${PORTFOLIO_URL}
+      ARCJET_KEY: ${ARCJET_KEY}
+      NEXT_PUBLIC_POSTHOG_KEY: ${NEXT_PUBLIC_POSTHOG_KEY}
+      NEXT_PUBLIC_POSTHOG_HOST: ${NEXT_PUBLIC_POSTHOG_HOST}
       NODE_OPTIONS: "--max-old-space-size=768"
     healthcheck:
       test: ["CMD", "wget", "-q", "-O", "-", "http://127.0.0.1:3000/api/health"]

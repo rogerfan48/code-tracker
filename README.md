@@ -32,6 +32,7 @@ A personal spaced re-practice tracker for LeetCode. It remembers every problem y
 - **Sticky layout that stays put.** The toolbar owns its top gap, sub-category headers stick under it, the table of contents is a fixed panel that shrinks above the footer instead of covering it, and category cards use `overflow: clip` (not `hidden`) so they never become scroll containers for the sticky headers.
 - **Design system in CSS custom properties** (`src/styles/tokens.css`): level ramp, due-urgency colours, tag palette, spacing; SCSS modules per component, Radix primitives for dialogs / menus / selects / tooltips, no utility framework.
 - **Production image** is a Next.js standalone build on `node:22-alpine` that runs `prisma migrate deploy` on boot; the dev container bind-mounts the source for hot reload.
+- **Edge protection & analytics** mirror the main site: an Arcjet proxy (shield, bot detection with search/monitor/preview allow-list, 100 req/min per IP) that fails open and stays quiet on the public landing, plus PostHog page views through a same-origin reverse proxy — both optional, enabled by env keys.
 - **SEO** for the public landing only: metadata, generated Open Graph image, robots / sitemap / manifest, JSON-LD; every tracker route is `noindex`.
 
 ## Stack
@@ -42,6 +43,7 @@ A personal spaced re-practice tracker for LeetCode. It remembers every problem y
 | UI | SCSS modules, Radix UI, dnd-kit, lucide-react, sonner |
 | Data | PostgreSQL 15, Prisma 6, zod |
 | Auth | NextAuth v5 (decode-only, shared JWT cookie) |
+| Security / analytics | Arcjet, PostHog (optional) |
 | Tooling | pnpm, ESLint, Stylelint, Vitest, Docker Compose |
 
 ## Structure

@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
+import { headers } from "next/headers";
 import { Toaster } from "sonner";
 import { SITE } from "@/lib/site";
+import { getSessionUser } from "@/lib/session";
+import { PostHogProvider } from "./posthog-provider";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
@@ -31,12 +34,21 @@ export const metadata: Metadata = {
   formatDetection: { email: false, telephone: false },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const [h, user] = await Promise.all([headers(), getSessionUser()]);
+  const flags = {
+    isp: h.get("x-arcjet-isp") ?? undefined,
+    isBot: h.get("x-arcjet-is-bot") === "true",
+    isVpn: h.get("x-arcjet-is-vpn") === "true",
+    isHosting: h.get("x-arcjet-is-hosting") === "true",
+  };
   return (
     <html lang="en" className={`${inter.variable} ${mono.variable}`}>
       <body>
-        {children}
-        <Toaster position="bottom-right" richColors closeButton />
+        <PostHogProvider flags={flags} user={user ? { id: user.id, email: user.email, name: user.name } : null}>
+          {children}
+          <Toaster position="bottom-right" richColors closeButton />
+        </PostHogProvider>
       </body>
     </html>
   );

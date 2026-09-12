@@ -12,6 +12,11 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 # prisma generate only validates the schema; the URL is never dialed at build time
 ENV DATABASE_URL="postgresql://user:password@localhost:5432/db"
+# NEXT_PUBLIC_* values are inlined into the client bundle, so they must exist at build time
+ARG NEXT_PUBLIC_POSTHOG_KEY
+ARG NEXT_PUBLIC_POSTHOG_HOST
+ENV NEXT_PUBLIC_POSTHOG_KEY=$NEXT_PUBLIC_POSTHOG_KEY
+ENV NEXT_PUBLIC_POSTHOG_HOST=$NEXT_PUBLIC_POSTHOG_HOST
 RUN corepack enable pnpm && npx prisma generate && pnpm run build
 
 FROM base AS runner

@@ -16,6 +16,8 @@ services:
       AUTH_COOKIE_NAME: ${AUTH_COOKIE_NAME}
       AUTH_COOKIE_DOMAIN: ${AUTH_COOKIE_DOMAIN}
       PORTFOLIO_URL: ${PORTFOLIO_URL}
+      ARCJET_KEY: ${ARCJET_KEY}
+      # PostHog is disabled in development mode, so its keys are intentionally not passed here
       NODE_ENV: development
       NODE_OPTIONS: "--max-old-space-size=1024"
     volumes:
