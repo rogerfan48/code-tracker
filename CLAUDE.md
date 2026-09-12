@@ -41,7 +41,7 @@ Code Tracker — a personal LeetCode re-practice tracker (Next.js 16 App Router,
 
 Non-obvious rules that the code enforces and changes must keep:
 
-- Auth is decode-only: `src/auth.ts` never signs users in, it reads a session JWT issued by a sibling site on a shared cookie domain. Only the roles in `ALLOWED_ROLES` (`src/lib/session.ts`) pass `requireUser()`.
+- Auth is decode-only: `src/auth.ts` never signs users in, it reads a session JWT issued by a sibling site on a shared cookie domain. Only accounts whose JWT carries `codeTrackerAccess: true` (a per-account flag set on the issuing site) pass `requireUser()` (`src/lib/session.ts`).
 - Every query is scoped by `userId` (the JWT `sub`). There is no FK to any user table.
 - Calendar dates only: the server stores `DATE`; "today", days-since and due-in are computed in the browser (`src/lib/due.ts`, unit-tested).
 - Only rows on `/problems` are interactive; `/due` and `/recent` link to `/problems?focus=<id>`.

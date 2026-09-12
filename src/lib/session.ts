@@ -1,13 +1,12 @@
 import { auth } from "@/auth";
 import { PORTFOLIO_URL } from "./env";
 
-export const ALLOWED_ROLES = ["admin", "premium"] as const;
-
 export type SessionUser = {
   id: string;
   role: string;
   name: string | null;
   email: string | null;
+  username: string | null;
   image: string | null;
   allowed: boolean;
 };
@@ -21,9 +20,11 @@ export async function getSessionUser(): Promise<SessionUser | null> {
     role: user.role,
     name: user.name ?? null,
     email: user.email ?? null,
+    username: user.username ?? null,
     // avatars uploaded on roger.tw are stored as site-relative paths
     image: user.image ? (user.image.startsWith("/") ? `${PORTFOLIO_URL}${user.image}` : user.image) : null,
-    allowed: (ALLOWED_ROLES as readonly string[]).includes(user.role),
+    // per-account flag granted on the issuing site; carried in the JWT
+    allowed: user.codeTrackerAccess === true,
   };
 }
 

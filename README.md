@@ -2,7 +2,7 @@
 
 A personal spaced re-practice tracker for LeetCode. It remembers every problem you have worked on, how familiar each attempt felt, and tells you which ones are due for another round.
 
-**Live**: [code.roger.tw](https://code.roger.tw) (private; sign-in via [roger.tw](https://roger.tw))
+**Live**: [code.roger.tw](https://code.roger.tw)
 
 ![Problems view: category tree, due badges, familiarity history](docs-assets/problems.webp)
 
@@ -25,7 +25,7 @@ A personal spaced re-practice tracker for LeetCode. It remembers every problem y
 
 ## Engineering notes
 
-- **Single sign-on without a login page.** The app never authenticates anyone. The main site issues its Auth.js session JWT on a shared cookie domain; this app shares the secret and simply *decodes* the cookie (`src/auth.ts`). No user table, no OAuth client, no password handling — and a role gate (`admin` / `premium`) applied on every page and API route. Everything is scoped to the JWT's subject.
+- **Single sign-on without a login page.** The app never authenticates anyone. The main site issues its Auth.js session JWT on a shared cookie domain; this app shares the secret and simply *decodes* the cookie (`src/auth.ts`). No user table, no OAuth client, no password handling — and a per-account permission flag carried in the token, checked on every page and API route. Everything is scoped to the JWT's subject.
 - **Calendar dates, computed where the user is.** The server stores plain `DATE`s; "today", days-since and due-in are pure functions in the browser (`src/lib/due.ts`, unit-tested), so a Taipei practice logged from Tokyo still counts on the right day.
 - **One fetch, derived views.** The tracker loads one bootstrap payload; tree, due list, recent log, stats and filters are memoised selectors on the client. Mutations hit small REST routes (zod-validated, ownership-checked, unique-number conflicts → 409) then refetch; drag-and-drop is optimistic and rolls back on failure.
 - **Multi-container drag-and-drop** with dnd-kit: one context over the whole tree, each sub category a sortable container, cross-container drops re-parent the row and persist as a single reorder call.

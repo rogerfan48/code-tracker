@@ -29,6 +29,8 @@ export const { handlers, auth, signOut } = NextAuth({
         if (token.email) session.user.email = token.email;
         if (token.picture) session.user.image = token.picture;
         session.user.role = typeof token.role === "string" ? token.role : "user";
+        session.user.codeTrackerAccess = token.codeTrackerAccess === true;
+        session.user.username = typeof token.username === "string" ? token.username : null;
       }
       return session;
     },

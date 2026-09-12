@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, LogOut, Mail } from "lucide-react";
+import { ArrowLeft, ArrowRight, LogOut } from "lucide-react";
 import { getSessionUser } from "@/lib/session";
 import { loginUrl, PORTFOLIO_URL } from "@/lib/env";
 import { SITE } from "@/lib/site";
+import { accessRequestMailto } from "@/lib/access-request";
 import { Wordmark } from "@/components/layout/wordmark";
 import { Button } from "@/components/ui/button";
 import { PreviewTable } from "@/components/landing/preview-table";
@@ -34,7 +35,7 @@ export default async function LandingPage() {
         <Wordmark />
         {user?.allowed ? (
           <Button asChild variant="primary" size="sm">
-            <Link href="/problems">Open tracker <ArrowRight size={14} /></Link>
+            <Link href="/problems">Open Code Tracker <ArrowRight size={14} /></Link>
           </Button>
         ) : user ? null : (
           <Button asChild size="sm">
@@ -57,20 +58,17 @@ export default async function LandingPage() {
         <div className={s.cta}>
           {user?.allowed ? (
             <Button asChild variant="primary">
-              <Link href="/problems">Open tracker <ArrowRight size={16} /></Link>
+              <Link href="/problems">Open Code Tracker <ArrowRight size={16} /></Link>
             </Button>
           ) : user ? (
             <div className={s.restricted} role="status">
               <p>
                 Signed in as <strong>{user.email ?? user.name}</strong>.<br />
-                This tool is restricted to authorized users.<br />
-                If you want access, please contact the owner.
+                Code Tracker is available to authorized accounts.
               </p>
               <div className={s.restrictedActions}>
                 <Button asChild variant="primary" size="sm">
-                  <a href="mailto:roger@roger.tw?subject=Code%20Tracker%20access">
-                    <Mail size={14} /> roger@roger.tw
-                  </a>
+                  <a href={accessRequestMailto(user)}>Request access</a>
                 </Button>
                 <Button asChild size="sm">
                   <a href={PORTFOLIO_URL}>
