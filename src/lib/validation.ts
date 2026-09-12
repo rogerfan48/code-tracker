@@ -3,7 +3,7 @@ import { TAG_COLORS } from "@/types/tracker";
 
 const name = z.string().trim().min(1, "Name is required").max(80);
 const dateString = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Expected YYYY-MM-DD");
-const url = z.union([z.url().max(500), z.literal("")]).transform((v) => (v === "" ? null : v));
+const url = z.union([z.url({ protocol: /^https?$/ }).max(500), z.literal("")]).transform((v) => (v === "" ? null : v));
 
 export const categoryCreate = z.object({ name, parentId: z.string().nullable().optional() });
 export const categoryPatch = z.object({ name });

@@ -3,9 +3,8 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   output: "standalone",
   allowedDevOrigins: ["dev.code.roger.tw", "code.roger.tw", "localhost:3000"],
-  images: {
-    remotePatterns: [{ protocol: "https", hostname: "lh3.googleusercontent.com" }],
-  },
+  // next/image is not used; disabling the optimizer removes the /_next/image endpoint from the attack surface
+  images: { unoptimized: true },
   async headers() {
     return [
       {
