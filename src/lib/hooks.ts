@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useMemo, useSyncExternalStore, type RefObject } from "react";
 
 const EVENT = "ct:storage";
 
@@ -46,4 +46,34 @@ export function useStoredValue<T>(key: string, initial: T): [T, (next: T | ((pre
   );
 
   return [value, update];
+}
+
+// Firefox cannot style a hovered scrollbar thumb, so the hover state is detected from the pointer
+// position and exposed as [data-scrollbar-hover]. Without a ref it tracks the page scrollbar.
+export function useScrollbarHover(ref?: RefObject<HTMLElement | null>) {
+  useEffect(() => {
+    const el = ref ? ref.current : document.documentElement;
+    if (!el) return;
+    const isRoot = el === document.documentElement;
+    const onMove = (e: MouseEvent) => {
+      let over: boolean;
+      if (isRoot) {
+        over = e.clientX >= el.clientWidth;
+      } else {
+        const borderRight = parseFloat(getComputedStyle(el).borderRightWidth) || 0;
+        const right = el.getBoundingClientRect().right - borderRight;
+        const barWidth = el.offsetWidth - el.clientWidth - el.clientLeft - borderRight;
+        over = barWidth > 0 && e.clientX >= right - barWidth && e.clientX < right;
+      }
+      el.toggleAttribute("data-scrollbar-hover", over);
+    };
+    const onLeave = () => el.removeAttribute("data-scrollbar-hover");
+    el.addEventListener("mousemove", onMove);
+    el.addEventListener("mouseleave", onLeave);
+    return () => {
+      el.removeEventListener("mousemove", onMove);
+      el.removeEventListener("mouseleave", onLeave);
+      el.removeAttribute("data-scrollbar-hover");
+    };
+  }, [ref]);
 }

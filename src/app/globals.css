@@ -3,6 +3,11 @@
 
 html {
   color-scheme: light;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+html[data-scrollbar-hover] {
+  scrollbar-color: var(--text-faint) transparent;
 }
 
 body {
@@ -11,6 +16,9 @@ body {
   color: var(--text);
   font-family: var(--font-sans);
   font-size: var(--text-md);
+
+  /* scrollbar-color inherits; restate it so the page scrollbar's hover colour stays on the page */
+  scrollbar-color: var(--border-strong) transparent;
 }
 
 :focus-visible {

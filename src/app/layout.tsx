@@ -5,6 +5,7 @@ import { Toaster } from "sonner";
 import { SITE } from "@/lib/site";
 import { getSessionUser } from "@/lib/session";
 import { PostHogProvider } from "./posthog-provider";
+import { ScrollbarHover } from "@/components/layout/scrollbar-hover";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
@@ -48,6 +49,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <PostHogProvider flags={flags} user={user ? { id: user.id, email: user.email, name: user.name } : null}>
           {children}
           <Toaster position="bottom-right" richColors closeButton />
+          <ScrollbarHover />
         </PostHogProvider>
       </body>
     </html>

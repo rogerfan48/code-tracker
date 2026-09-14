@@ -3,14 +3,14 @@
 import { useEffect, useRef, useState } from "react";
 import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useStoredValue } from "@/lib/hooks";
+import { useScrollbarHover, useStoredValue } from "@/lib/hooks";
 import type { MainNode } from "@/lib/selectors";
 import s from "./toc.module.scss";
 
 const MIN_WIDTH = 160;
 const MAX_WIDTH = 420;
 // keep the active entry this far from the list's edges, like vim's scrolloff
-const SCROLLOFF = 50;
+const SCROLLOFF = 100;
 // must match --page-gap in tokens.css
 const PAGE_GAP = 20;
 
@@ -26,6 +26,7 @@ export function Toc({ tree, collapsed, offset, onExpand }: { tree: MainNode[]; c
   const [open, setOpen] = useStoredValue<boolean>("ct.tocOpen", true);
   const [width, setWidth] = useStoredValue<number>("ct.tocWidth", 220);
   const listRef = useRef<HTMLDivElement>(null);
+  useScrollbarHover(listRef);
   const slotRef = useRef<HTMLDivElement>(null);
   const [left, setLeft] = useState<number | null>(null);
   const [bottomLimit, setBottomLimit] = useState<number | null>(null);
@@ -97,7 +98,7 @@ export function Toc({ tree, collapsed, offset, onExpand }: { tree: MainNode[]; c
     if (!list || !id) return;
     const el = list.querySelector<HTMLElement>(`[data-toc-id="${CSS.escape(id)}"]`);
     if (!el) return;
-    const top = el.offsetTop - list.offsetTop;
+    const top = el.offsetTop;
     const bottom = top + el.offsetHeight;
     const viewTop = list.scrollTop;
     const viewBottom = viewTop + list.clientHeight;
@@ -191,7 +192,9 @@ export function Toc({ tree, collapsed, offset, onExpand }: { tree: MainNode[]; c
         onPointerMove={onResizeMove}
         onPointerUp={onResizeEnd}
         onPointerCancel={onResizeEnd}
-      />
+      >
+        <span />
+      </div>
     </aside>
     </div>
   );

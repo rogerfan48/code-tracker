@@ -73,7 +73,17 @@
   min-height: 0;
   overflow-y: auto;
   padding: 8px 6px 10px 8px;
+  border-radius: 0 0 var(--radius-card) var(--radius-card);
   scrollbar-width: thin;
+
+  &[data-scrollbar-hover] {
+    scrollbar-color: var(--text-faint) transparent;
+  }
+
+  // Firefox's "thin" is only a few px wide; its "auto" is close to Chrome's "thin"
+  @supports (-moz-appearance: none) {
+    scrollbar-width: auto;
+  }
 }
 
 .subs {
@@ -124,27 +134,34 @@
 .resizer {
   position: absolute;
   top: 0;
-  right: -5px;
-  width: 10px;
-  height: 100%;
+  bottom: 0;
+  right: -12px;
+  width: 12px;
+  border-radius: 4px;
   cursor: col-resize;
   touch-action: none;
+  transition: background var(--ease);
 
-  &::after {
-    content: "";
+  span {
     position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 4px;
-    width: 2px;
-    border-radius: 1px;
-    background: transparent;
-    transition: background var(--ease);
+    top: 50%;
+    right: 4px;
+    width: 4px;
+    height: 48px;
+    border-radius: var(--radius-pill);
+    background: var(--accent);
+    transform: translateY(-50%);
+    opacity: 0;
+    transition: opacity var(--ease);
   }
 
-  &:hover::after,
-  &:active::after {
-    background: var(--accent-border);
+  &:hover,
+  &:active {
+    background: var(--accent-soft);
+
+    span {
+      opacity: 1;
+    }
   }
 }
 
