@@ -37,6 +37,19 @@
     background: var(--surface-muted);
     cursor: not-allowed;
   }
+
+  &[type="date"] {
+    /* Safari centres the value with its UA inline-flex, which display: block drops */
+    display: flex;
+
+    /* iOS otherwise forces content-box and its own min-width, overflowing width: 100% */
+    appearance: none;
+
+    /* iOS centres the value horizontally */
+    &::-webkit-date-and-time-value {
+      text-align: start;
+    }
+  }
 }
 
 .textarea {

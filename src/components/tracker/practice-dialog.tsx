@@ -78,7 +78,15 @@ function PracticeForm({ problem, today, mutate, close }: { problem: ProblemDto; 
   };
 
   return (
-    <DialogContent size="md" className={s.content}>
+    <DialogContent
+      size="md"
+      className={s.content}
+      onOpenAutoFocus={(e) => {
+        // Radix would focus the date input, which opens the native picker on iPadOS
+        e.preventDefault();
+        (e.currentTarget as HTMLElement).focus();
+      }}
+    >
       <DialogHeader>
         <DialogTitle className={s.title}>
           <span className={s.number}>{problem.number}</span>
