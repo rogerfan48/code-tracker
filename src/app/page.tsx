@@ -1,7 +1,8 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { ArrowLeft, ArrowRight, LogOut } from "lucide-react";
 import { getSessionUser } from "@/lib/session";
-import { loginUrl, PORTFOLIO_URL } from "@/lib/env";
+import { ACCESS_REFRESH_URL, loginUrl, PORTFOLIO_URL } from "@/lib/env";
 import { SITE } from "@/lib/site";
 import { accessRequestMailto } from "@/lib/access-request";
 import { Wordmark } from "@/components/layout/wordmark";
@@ -14,8 +15,10 @@ import s from "./page.module.scss";
 
 export const dynamic = "force-dynamic";
 
-export default async function LandingPage() {
+export default async function LandingPage({ searchParams }: { searchParams: Promise<{ restricted?: string }> }) {
   const user = await getSessionUser();
+  // the token may predate an approval; the refresh comes back here with ?restricted=1 if access is still off
+  if (user && !user.allowed && !(await searchParams).restricted) redirect(ACCESS_REFRESH_URL);
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebApplication",

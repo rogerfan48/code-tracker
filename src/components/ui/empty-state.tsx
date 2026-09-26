@@ -5,7 +5,7 @@ export function EmptyState({ title, body, action }: { title: string; body?: stri
     <div className={s.empty}>
       <p className={s.title}>{title}</p>
       {body ? <p className={s.body}>{body}</p> : null}
-      {action}
+      {action ? <div className={s.action}>{action}</div> : null}
     </div>
   );
 }

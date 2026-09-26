@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { getSessionUser } from "@/lib/session";
-import { loginUrl } from "@/lib/env";
+import { ACCESS_REFRESH_URL, loginUrl } from "@/lib/env";
 import { loadBootstrap } from "@/lib/serialize";
 import { TrackerProvider } from "@/components/tracker/tracker-provider";
 import { AppShell } from "@/components/layout/app-shell";
@@ -17,7 +17,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     const path = (await headers()).get("x-pathname") ?? "/problems";
     redirect(loginUrl(path));
   }
-  if (!user.allowed) redirect("/?restricted=1");
+  if (!user.allowed) redirect(ACCESS_REFRESH_URL);
 
   const initial = await loadBootstrap(user.id);
   return (

@@ -15,6 +15,7 @@ import { ProblemDialog, type ProblemDialogState } from "./problem-dialog";
 import { Toc } from "./toc";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { EmptyState } from "@/components/ui/empty-state";
+import { Button } from "@/components/ui/button";
 import s from "./problems-view.module.scss";
 
 export function ProblemsView() {
@@ -31,6 +32,7 @@ export function ProblemsView() {
   const [problemDialog, setProblemDialog] = useState<ProblemDialogState>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [focusedId, setFocusedId] = useState<string | null>(null);
+  const [confirmReference, setConfirmReference] = useState(false);
   const toolbarRef = useRef<HTMLDivElement>(null);
   const [stickyTop, setStickyTop] = useState(112);
 
@@ -121,7 +123,15 @@ export function ProblemsView() {
       {editing ? (
         <StructureEditor />
       ) : tree.length === 0 ? (
-        <EmptyState title="No categories yet" body="Use “Edit structure” to create your first main and sub categories, or seed the reference list." />
+        <EmptyState
+          title="No categories yet"
+          body="Use “Edit structure” to create your first main and sub categories, or start from the reference list."
+          action={
+            <Button variant="primary" onClick={() => setConfirmReference(true)}>
+              Start with the reference list (267 problems)
+            </Button>
+          }
+        />
       ) : visibleTree.length === 0 ? (
         <EmptyState title="Nothing matches" body="Try a different search or clear the filters." />
       ) : (
@@ -155,6 +165,16 @@ export function ProblemsView() {
         onConfirm={async () => {
           if (!deleting) return;
           await mutate(() => api(`/api/problems/${deleting.id}`, { method: "DELETE" }), { success: "Problem deleted" });
+        }}
+      />
+      <ConfirmDialog
+        open={confirmReference}
+        onOpenChange={setConfirmReference}
+        title="Start with the reference list?"
+        description="This adds 267 problems in 17 categories. There's no reset: removing them means deleting every problem and then every category, one by one. To build your own list instead, cancel and use “Edit structure”."
+        confirmLabel="Add 267 problems"
+        onConfirm={async () => {
+          await mutate(() => api("/api/reference", { method: "POST" }), { success: "Reference list added" });
         }}
       />
     </div>
